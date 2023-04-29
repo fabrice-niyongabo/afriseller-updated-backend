@@ -28,10 +28,10 @@ const addCategory = async (req, res) => {
     return res.status(400).send({ msg: "No file was uploaded." });
   }
   try {
-    const { name, shopCategoryId } = req.body;
+    const { name } = req.body;
     const io = req.app.get("socketio");
     // Validate user input
-    if (!(name && shopCategoryId)) {
+    if (!name) {
       return res.status(400).send({
         status: "Error",
         msg: "Provide correct info",
@@ -39,7 +39,6 @@ const addCategory = async (req, res) => {
     }
     const category = await Categories.create({
       name,
-      shopCategoryId,
       image: req.file.filename,
     });
     io.emit(eventNamesEnum.CyizereEventNames, {
@@ -61,9 +60,9 @@ const addCategory = async (req, res) => {
 const updateCategory = async (req, res) => {
   try {
     const io = req.app.get("socketio");
-    const { name, id, shopCategoryId } = req.body;
+    const { name, id } = req.body;
     // Validate user input
-    if (!(name && id && shopCategoryId)) {
+    if (!(name && id)) {
       return res.status(400).send({
         status: "Error",
         msg: "Provide correct info",
@@ -72,7 +71,6 @@ const updateCategory = async (req, res) => {
     const category = await Categories.update(
       {
         name,
-        shopCategoryId,
       },
       { where: { id } }
     );
