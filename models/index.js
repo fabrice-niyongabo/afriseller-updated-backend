@@ -28,7 +28,10 @@ db.sequelize = sequelize;
 db.users = require("./usersModel")(sequelize, DataTypes);
 db.markets = require("./marketsModel")(sequelize, DataTypes);
 db.shop_categories = require("./shopCategories")(sequelize, DataTypes);
-db.product_categories = require("./productCategories")(sequelize, DataTypes);
+db.product_sub_categories = require("./productSubCategories")(
+  sequelize,
+  DataTypes
+);
 db.product_categories = require("./productCategories")(sequelize, DataTypes);
 db.products = require("./productsModel")(sequelize, DataTypes);
 db.product_prices = require("./productPricesModel")(sequelize, DataTypes);

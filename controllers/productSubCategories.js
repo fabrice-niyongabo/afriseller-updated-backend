@@ -3,23 +3,15 @@ const { eventNamesEnum, handleSocketDataUpdate } = require("../helpers");
 const db = require("../models");
 
 // models
-const Categories = db.product_categories;
 const SubCategories = db.product_sub_categories;
 // models
 
 const getAll = async (req, res) => {
   try {
-    const categories = [];
-    const allCategories = await Categories.findAll({});
-    for (let i = 0; i < allCategories.length; i++) {
-      const subCategories = await SubCategories.findAll({
-        where: { categoryId: allCategories[i].dataValues.id },
-      });
-      categories.push({ ...allCategories[i].dataValues, subCategories });
-    }
+    const subcategories = await SubCategories.findAll({});
     return res.status(200).json({
       status: "success",
-      categories,
+      subcategories,
     });
   } catch (err) {
     res.status(400).send({
@@ -29,34 +21,38 @@ const getAll = async (req, res) => {
 };
 
 const addCategory = async (req, res) => {
-  if (req.fileValidationError) {
-    return res.status(400).send({ msg: req.fileValidationError.message });
-  }
-  if (!req.file) {
-    return res.status(400).send({ msg: "No file was uploaded." });
-  }
   try {
-    const { name } = req.body;
+    const { name, categoryId } = req.body;
     const io = req.app.get("socketio");
     // Validate user input
-    if (!name) {
+    if (!(name && categoryId)) {
       return res.status(400).send({
         status: "Error",
         msg: "Provide correct info",
       });
     }
-    const category = await Categories.create({
+    //validate
+    const subCat = await SubCategories.findOne({
+      where: { categoryId, name },
+    });
+    if (subCat) {
+      return res.status(400).send({
+        status: "Error",
+        msg: "This sub category already exists",
+      });
+    }
+    const subcategory = await SubCategories.create({
       name,
-      image: req.file.filename,
+      categoryId,
     });
     io.emit(eventNamesEnum.CyizereEventNames, {
       type: eventNamesEnum.ADD_PRODUCT_CATEGORY,
-      data: category.dataValues,
+      data: subcategory.dataValues,
     });
     return res.status(201).json({
       status: "success",
-      msg: "Category added successfull!",
-      category: { ...category.dataValues, subCategories: [] },
+      msg: "Sub Category added successfull!",
+      subcategory: subcategory.dataValues,
     });
   } catch (err) {
     res.status(400).send({
@@ -76,7 +72,7 @@ const updateCategory = async (req, res) => {
         msg: "Provide correct info",
       });
     }
-    const category = await Categories.update(
+    const subcategory = await SubCategories.update(
       {
         name,
       },
@@ -84,18 +80,15 @@ const updateCategory = async (req, res) => {
     );
     await handleSocketDataUpdate(
       { where: { id } },
-      Categories,
+      SubCategories,
       io,
       eventNamesEnum.CyizereEventNames,
       eventNamesEnum.UPDATE_PRODUCT_CATEGORY
     );
-    const subCategories = await SubCategories.findAll({
-      where: { categoryId: id },
-    });
     return res.status(200).json({
       status: "success",
       msg: "Product Category updated successfull!",
-      category: { ...category, subCategories },
+      subcategory,
     });
   } catch (err) {
     res.status(400).send({
@@ -115,7 +108,10 @@ const deleteCategory = async (req, res) => {
         msg: "Provide correct info",
       });
     }
-    const category = await Categories.destroy({ where: { id }, force: true });
+    const subcategory = await SubCategories.destroy({
+      where: { id },
+      force: true,
+    });
     io.emit(eventNamesEnum.CyizereEventNames, {
       type: eventNamesEnum.DELETE_PRODUCT_CATEGORY,
       data: { id },
@@ -123,7 +119,7 @@ const deleteCategory = async (req, res) => {
     return res.status(200).json({
       status: "success",
       msg: "Category deleted successfull!",
-      category,
+      subcategory,
     });
   } catch (err) {
     res.status(400).send({
