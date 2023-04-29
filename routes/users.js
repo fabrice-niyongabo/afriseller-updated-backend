@@ -4,14 +4,11 @@ const { uploadImage } = require("../controllers/upload");
 const {
   login,
   register,
-  getClientsList,
   updateInfo,
   updatePwd,
   updateImage,
   adminGetAll,
   updateUserStatus,
-  googleLogin,
-  googleRegister,
 } = require("../controllers/users");
 
 const auth = require("../middleware/auth");

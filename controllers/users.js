@@ -9,7 +9,7 @@ const Users = db.users;
 
 const login = async (req, res) => {
   try {
-    const { emailOrPhone, password, app } = req.body;
+    const { emailOrPhone, password } = req.body;
 
     // Validate user input
     if (!(emailOrPhone && password)) {
@@ -37,26 +37,17 @@ const login = async (req, res) => {
         },
         process.env.TOKEN_KEY,
         {
-          expiresIn:
-            app !== undefined
-              ? process.env.TOKEN_EXPIRATION
-              : user.role === "admin"
-              ? process.env.ADMIN_TOKEN_EXPIRATION
-              : process.env.TOKEN_EXPIRATION,
+          expiresIn: process.env.TOKEN_EXPIRATION,
         }
       );
       // user
       return res.status(200).json({
         msg: "Logged in successful",
-        userId: user.userId,
-        walletAmounts: user.walletAmounts,
-        email: user.email,
-        role: user.role,
-        phone: user.phone,
-        createdAt: user.createdAt,
-        names: user.names,
-        image: user.image,
-        token,
+        user: {
+          ...user.dataValues,
+          password: "",
+          token,
+        },
       });
     } else {
       return res.status(400).send({ msg: "Wrong email/phone or password" });
@@ -71,7 +62,7 @@ const login = async (req, res) => {
 
 const register = async (req, res) => {
   try {
-    const { names, email, phone, password, image } = req.body;
+    const { names, email, phone, password } = req.body;
 
     // Validate user input
     if (!(names && email && phone && password)) {
@@ -84,12 +75,10 @@ const register = async (req, res) => {
     //Encrypt user password
     encryptedPassword = await bcrypt.hash(password, 10);
 
-    // Create user in our database
     const user = await Users.create({
       names,
       phone,
-      image: image ? image : "",
-      email: email.toLowerCase(), // sanitize: convert email to lowercase
+      email: email.toLowerCase(),
       password: encryptedPassword,
     });
 
@@ -102,14 +91,10 @@ const register = async (req, res) => {
         phone: user.phone,
         createdAt: user.createdAt,
         names: user.names,
-        image: user.image,
       },
       process.env.TOKEN_KEY,
       {
-        expiresIn:
-          user.role === "admin"
-            ? process.env.ADMIN_TOKEN_EXPIRATION
-            : process.env.TOKEN_EXPIRATION,
+        expiresIn: process.env.TOKEN_EXPIRATION,
       }
     );
 
@@ -126,85 +111,6 @@ const register = async (req, res) => {
   } catch (err) {
     console.log(err);
     res.status(400).send({
-      msg: err.message,
-    });
-  }
-};
-
-const googleRegister = async (req, res) => {
-  try {
-    const { email, id, name, phone } = req.body;
-
-    // Validate user input
-    if (!(email && id && name && phone)) {
-      return res.status(400).send({
-        status: "Error",
-        msg: "Unable to sign you up because of some data missing.",
-      });
-    }
-
-    //Encrypt user password
-    encryptedPassword = await bcrypt.hash(id, 10);
-
-    // Create user in our database
-    const user = await Users.create({
-      names: name,
-      phone,
-      image: "",
-      email: email.toLowerCase(), // sanitize: convert email to lowercase
-      password: encryptedPassword,
-      googleId: id,
-    });
-
-    // Create token
-    const token = jwt.sign(
-      {
-        userId: user.userId,
-        email: user.email,
-        role: user.role,
-        phone: user.phone,
-        createdAt: user.createdAt,
-        names: user.names,
-        image: user.image,
-      },
-      process.env.TOKEN_KEY,
-      {
-        expiresIn:
-          user.role === "admin"
-            ? process.env.ADMIN_TOKEN_EXPIRATION
-            : process.env.TOKEN_EXPIRATION,
-      }
-    );
-
-    // return new user
-    return res.status(201).json({
-      status: "success",
-      msg: "User account created successfull!",
-      user: {
-        ...user.dataValues,
-        password: "",
-        token,
-      },
-    });
-  } catch (err) {
-    console.log(err);
-    res.status(400).send({
-      msg: err.message,
-    });
-  }
-};
-
-const getClientsList = async (req, res) => {
-  try {
-    const clients = await Users.findAll({
-      where: { role: "client" },
-      attributes: ["userId", "names", "email", "phone", "image"],
-    });
-    return res.status(200).json({
-      clients,
-    });
-  } catch (err) {
-    return res.status(400).send({
       msg: err.message,
     });
   }
@@ -342,71 +248,12 @@ const updateImage = async (req, res) => {
   }
 };
 
-const googleLogin = async (req, res) => {
-  const { email, googleId } = req.body;
-  try {
-    if (email === undefined || googleId === undefined) {
-      return res.status(400).send({
-        status: "Error",
-        msg: "Please provide correct information",
-      });
-    }
-    const user = await Users.findOne({
-      where: {
-        email,
-      },
-    });
-    if (user) {
-      // Create token
-      const token = jwt.sign(
-        {
-          userId: user.userId,
-          email: user.email,
-          role: user.role,
-          phone: user.phone,
-          createdAt: user.createdAt,
-          names: user.names,
-          image: user.image,
-        },
-        process.env.TOKEN_KEY,
-        {
-          expiresIn: process.env.TOKEN_EXPIRATION,
-        }
-      );
-      // user
-      return res.status(200).json({
-        msg: "Logged in successful",
-        userId: user.userId,
-        walletAmounts: user.walletAmounts,
-        email: user.email,
-        role: user.role,
-        phone: user.phone,
-        createdAt: user.createdAt,
-        names: user.names,
-        image: user.image,
-        token,
-      });
-    } else {
-      return res.status(400).send({
-        msg: "Invalid Credentials, please sign in with google first so that we can be able authenticate you.",
-      });
-    }
-  } catch (err) {
-    return res.status(400).send({
-      msg: err.message,
-    });
-  }
-};
-
 module.exports = {
   login,
   register,
-  getClientsList,
   updateInfo,
   updateImage,
   updatePwd,
   adminGetAll,
   updateUserStatus,
-  googleLogin,
-  googleRegister,
 };
