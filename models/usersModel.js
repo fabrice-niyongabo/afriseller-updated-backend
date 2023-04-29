@@ -37,17 +37,12 @@ module.exports = (sequelize, DataTypes) => {
         defaultValue: "client",
         allowNull: false,
       },
+      shopId: {
+        type: DataTypes.INTEGER,
+      },
       image: {
         type: DataTypes.TEXT,
         defaultValue: "",
-      },
-      googleId: {
-        type: DataTypes.TEXT,
-      },
-      walletAmounts: {
-        type: DataTypes.DECIMAL(10, 2),
-        defaultValue: 0.0,
-        allowNull: false,
       },
       isActive: {
         type: DataTypes.BOOLEAN,

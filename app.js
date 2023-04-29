@@ -1,8 +1,6 @@
 require("dotenv").config();
 const express = require("express");
 const cors = require("cors");
-const fbAdmin = require("firebase-admin");
-const serviceAccount = require("./ntumaapp-52df6-firebase-adminsdk-bi57i-cb0f86dc86.json");
 const app = express();
 const server = require("http").Server(app);
 const io = require("socket.io")(server, {
@@ -16,11 +14,6 @@ app.use(express.json({ limit: "50mb" }));
 
 app.use(cors());
 app.set("socketio", io);
-
-// Intialize the firebase-admin project/account
-fbAdmin.initializeApp({
-  credential: fbAdmin.credential.cert(serviceAccount),
-});
 
 //static
 app.use("/uploads", express.static("./uploads"));
