@@ -54,7 +54,6 @@ const ordersRoute = require("./routes/orders");
 const walletRoute = require("./routes/wallet");
 const dishesRoute = require("./routes/dishes");
 const agentsRoute = require("./routes/agents");
-const suppliersPaymentDetailsRoute = require("./routes/suppliersPaymentDetails");
 const messagesRoute = require("./routes/messages");
 const agentsWalletRoute = require("./routes/agentsWallet");
 const agentsFeesRoute = require("./routes/agentsFees");
@@ -68,6 +67,8 @@ const systemFeesRoute = require("./routes/systemFees");
 const packagingFeesRoute = require("./routes/packagingFees");
 const suppliersRoute = require("./routes/suppliers");
 
+const shopsRoute = require("./routes/shops");
+
 app.use("/api/users/", usersRoute);
 app.use("/api/agents/", agentsRoute);
 app.use("/api/agents/fees/", agentsFeesRoute);
@@ -75,12 +76,13 @@ app.use("/api/markets/", marketsRoute);
 app.use("/api/shopcategories/", shopCategoriesRoute);
 app.use("/api/productcategories/", productCategoriesRoute);
 app.use("/api/productsubcategories/", productSubCategoriesRoute);
+app.use("/api/shops/", shopsRoute);
+
 app.use("/api/products/", productsRoute);
 app.use("/api/fees/", feesRoute);
 app.use("/api/orders/", ordersRoute);
 app.use("/api/wallet/", walletRoute);
 app.use("/api/dishes/", dishesRoute);
-// app.use("/api/suppliers/", suppliersPaymentDetailsRoute);
 app.use("/api/messages/", messagesRoute);
 app.use("/api/agentswallet/", agentsWalletRoute);
 app.use("/api/notifications/", notificationsRoute);

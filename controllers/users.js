@@ -43,11 +43,7 @@ const login = async (req, res) => {
       // user
       return res.status(200).json({
         msg: "Logged in successful",
-        user: {
-          ...user.dataValues,
-          password: "",
-          token,
-        },
+        user: { shopId: null, ...user.dataValues, password: "", token },
       });
     } else {
       return res.status(400).send({ msg: "Wrong email/phone or password" });
@@ -103,6 +99,7 @@ const register = async (req, res) => {
       status: "success",
       msg: "User account created successfull!",
       user: {
+        shopId: null,
         ...user.dataValues,
         password: "",
         token,

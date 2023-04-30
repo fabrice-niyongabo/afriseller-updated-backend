@@ -19,6 +19,12 @@ const userTypesEnum = {
   CLIENT: "CLIENT",
 };
 
+const userRolesEnum = {
+  ADMIN: "admin",
+  SELLER: "seller",
+  CLIENT: "client",
+};
+
 const statusEnum = {
   PENDING: "PENDING",
   WAITING: "WAITING",
@@ -290,4 +296,5 @@ module.exports = {
   getRandomNumber,
   handleSocketDataUpdate,
   saveAdminNotification,
+  userRolesEnum,
 };
