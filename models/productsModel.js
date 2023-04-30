@@ -8,11 +8,15 @@ module.exports = (sequelize, DataTypes) => {
         autoIncrement: true,
         allowNull: false,
       },
-      supplierId: {
+      shopId: {
         type: DataTypes.INTEGER,
         allowNull: false,
       },
       categoryId: {
+        type: DataTypes.INTEGER,
+        allowNull: false,
+      },
+      subCategoryId: {
         type: DataTypes.INTEGER,
         allowNull: false,
       },
@@ -30,10 +34,6 @@ module.exports = (sequelize, DataTypes) => {
       singlePrice: {
         type: DataTypes.DECIMAL(10, 2),
         defaultValue: 0.0,
-        allowNull: false,
-      },
-      image: {
-        type: DataTypes.TEXT,
         allowNull: false,
       },
       isActive: {

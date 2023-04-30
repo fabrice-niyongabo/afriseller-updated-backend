@@ -3,7 +3,7 @@ const router = express.Router();
 const {
   register,
   getVerification,
-  updateDocument,
+  updateBanner,
   updateShopImage,
   adminGetAll,
   udpateShop,
@@ -19,13 +19,7 @@ router.get("/all", auth, protectRoute(["admin"]), adminGetAll);
 router.post("/register", auth, register);
 router.get("/verification", auth, protectRoute(["suppliers"]), getVerification);
 router.put("/", auth, udpateShop);
-router.put(
-  "/doc",
-  auth,
-  protectRoute(["suppliers"]),
-  uploadImage.single("file"),
-  updateDocument
-);
+router.put("/shopbanner", auth, uploadImage.single("file"), updateBanner);
 router.put("/shopimage", auth, uploadImage.single("file"), updateShopImage);
 
 router.get("/", getAllShops);

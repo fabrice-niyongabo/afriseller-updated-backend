@@ -116,7 +116,7 @@ const getVerification = async (req, res) => {
   }
 };
 
-const updateDocument = async (req, res) => {
+const updateBanner = async (req, res) => {
   try {
     if (req.fileValidationError) {
       return res.status(400).send({ msg: req.fileValidationError.message });
@@ -128,14 +128,9 @@ const updateDocument = async (req, res) => {
     }
     await Shops.update(
       {
-        idNumberDocument: req.file.filename,
-        verificationStatus: verificationStatusEnum.IN_REVIEW,
+        shopBanner: req.file.filename,
       },
-      {
-        where: {
-          supplierId: req.user.supplierId,
-        },
-      }
+      { where: { userId: req.user.userId } }
     );
 
     return res.status(200).json({
@@ -297,7 +292,7 @@ const udpateShop = async (req, res) => {
 module.exports = {
   register,
   getVerification,
-  updateDocument,
+  updateBanner,
   updateShopImage,
   adminGetAll,
   udpateShop,

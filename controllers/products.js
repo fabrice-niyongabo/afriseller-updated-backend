@@ -3,8 +3,7 @@ const { eventNamesEnum, handleSocketDataUpdate } = require("../helpers");
 const db = require("../models");
 
 // models
-const Markets = db.markets;
-const Categories = db.categories;
+const Users = db.users;
 const Products = db.products;
 const ProductPrices = db.product_prices;
 // models
@@ -58,18 +57,28 @@ const adminAll = async (req, res) => {
 };
 
 const addProduct = async (req, res) => {
-  if (req.fileValidationError) {
-    return res.status(400).send({ msg: req.fileValidationError.message });
-  }
-  if (!req.file) {
-    return res.status(400).send({ msg: "No file was uploaded." });
-  }
   try {
     const io = req.app.get("socketio");
-    const { categoryId, name, description, priceType, singlePrice } = req.body;
+    const {
+      subCategoryId,
+      categoryId,
+      name,
+      description,
+      priceType,
+      singlePrice,
+    } = req.body;
 
     // Validate user input
-    if (!(categoryId && name && description && priceType && singlePrice)) {
+    if (
+      !(
+        categoryId &&
+        name &&
+        description &&
+        priceType &&
+        singlePrice !== undefined &&
+        subCategoryId
+      )
+    ) {
       return res.status(400).send({
         status: "Error",
         msg: "Provide correct info",
@@ -77,29 +86,47 @@ const addProduct = async (req, res) => {
     }
 
     //validate product
+    const user = await Users.findOne({
+      where: {
+        userId: req.user.userId,
+      },
+    });
+
+    if (!user) {
+      return res.status(401).send({
+        status: "Error",
+        msg: "Something went wrong",
+      });
+    }
+
     const oldproduct = await Products.findOne({
-      where: { supplierId: req.user.supplierId, categoryId, name },
+      where: {
+        shopId: user.dataValues.shopId,
+        categoryId,
+        subCategoryId,
+        name,
+      },
     });
     if (oldproduct) {
       return res.status(400).send({
         success: false,
-        msg: "Product name already exists in from this supplier",
+        msg: "Product name already exists",
       });
     }
 
     const product = await Products.create({
-      supplierId: req.user.supplierId,
+      shopId: user.dataValues.shopId,
+      subCategoryId,
       categoryId,
       name,
       description,
       priceType,
       singlePrice,
-      image: req.file.filename,
     });
-    io.emit(eventNamesEnum.CyizereEventNames, {
-      type: eventNamesEnum.ADD_PRODUCT,
-      data: product.dataValues,
-    });
+    // io.emit(eventNamesEnum.CyizereEventNames, {
+    //   type: eventNamesEnum.ADD_PRODUCT,
+    //   data: product.dataValues,
+    // });
     return res.status(201).json({
       status: "success",
       msg: "Product added successfull!",
