@@ -8,11 +8,13 @@ const {
   userTypesEnum,
   saveAdminNotification,
   verificationStatusEnum,
+  userRolesEnum,
 } = require("../helpers");
 const db = require("../models");
 
 // models
 const Shops = db.shops;
+const Users = db.users;
 // models
 
 const register = async (req, res) => {
@@ -59,6 +61,14 @@ const register = async (req, res) => {
       userId: req.user.userId,
     });
 
+    //update user details
+    await Users.update(
+      { role: userRolesEnum.SELLER, shopId: shop.dataValues.shopId },
+      { where: { userId: req.user.userId } }
+    );
+
+    const user = await Users.findOne({ where: { userId: req.user.userId } });
+
     // await saveAdminNotification(
     //   "New Supplier Registered!",
     //   "Supplier <b>" +
@@ -71,6 +81,7 @@ const register = async (req, res) => {
       status: "success",
       msg: "Your shop has been registered!",
       shop,
+      user,
     });
   } catch (err) {
     console.log(err);
@@ -138,36 +149,7 @@ const updateDocument = async (req, res) => {
   }
 };
 
-const updateIdNumber = async (req, res) => {
-  try {
-    const { idNumber } = req.body;
-    if (!idNumber || idNumber.trim().length !== 16) {
-      return res.status(400).send({
-        status: "Error",
-        msg: "Please provide a vild ID/Passport Number",
-      });
-    }
-    await Shops.update(
-      { idNumber, verificationStatus: "In Review" },
-      {
-        where: {
-          supplierId: req.user.supplierId,
-        },
-      }
-    );
-
-    return res.status(200).json({
-      idNumber,
-      msg: "Identification number updated successfull.",
-    });
-  } catch (err) {
-    res.status(400).send({
-      msg: err.message,
-    });
-  }
-};
-
-const updateImage = async (req, res) => {
+const updateShopImage = async (req, res) => {
   if (req.fileValidationError) {
     return res.status(400).send({ msg: req.fileValidationError.message });
   }
@@ -179,11 +161,11 @@ const updateImage = async (req, res) => {
       {
         shopImage: req.file.filename,
       },
-      { where: { supplierId: req.user.supplierId } }
+      { where: { userId: req.user.userId } }
     );
     return res.status(200).json({
       status: "success",
-      msg: "Profile Image Updated successfull!",
+      msg: "Shop Image Updated successfull!",
       image: req.file.filename,
     });
   } catch (err) {
@@ -198,6 +180,24 @@ const getAllShops = async (req, res) => {
     const shops = await Shops.findAll({});
     return res.status(200).json({
       shops,
+    });
+  } catch (err) {
+    return res.status(400).send({
+      msg: err.message,
+    });
+  }
+};
+
+const getMyShop = async (req, res) => {
+  try {
+    const shop = await Shops.findOne({ where: { userId: req.user.userId } });
+    if (!shop) {
+      return res.status(401).json({
+        msg: "Unable to find your shop",
+      });
+    }
+    return res.status(200).json({
+      shop,
     });
   } catch (err) {
     return res.status(400).send({
@@ -223,56 +223,70 @@ const adminGetAll = async (req, res) => {
 
 const udpateShop = async (req, res) => {
   const {
+    shopName,
+    description,
+    phone1,
+    phone2,
+    phone3,
+    address,
+    open,
+    close,
     shopId,
-    isActive,
-    verificationStatus,
-    verificationMessage,
-    isDisabled,
-    sendNotification,
   } = req.body;
+
   try {
     const io = req.app.get("socketio");
     if (
-      shopId === undefined ||
-      isActive === undefined ||
-      verificationStatus === undefined ||
-      verificationMessage === undefined ||
-      isDisabled === undefined ||
-      sendNotification === undefined
+      !(
+        shopName &&
+        description &&
+        address &&
+        phone1 &&
+        open &&
+        close &&
+        phone2 !== undefined &&
+        phone3 !== undefined &&
+        shopId !== undefined
+      )
     ) {
       return res.status(400).send({
         status: "Error",
-        msg: "Please provide correct information",
+        msg: "Provide correct info",
       });
     }
-    const isVerified = verificationStatus === "Verified" ? true : false;
+
     await Shops.update(
       {
-        isActive,
-        isVerified,
-        verificationStatus,
-        verificationMessage,
-        isDisabled,
+        shopName,
+        description,
+        phone1,
+        phone2,
+        phone3,
+        address,
+        open,
+        close,
+        shopId,
       },
-      { where: { shopId } }
+      { where: { shopId, userId: req.user.userId } }
     );
     await handleSocketDataUpdate(
-      { where: { shopId } },
+      { where: { shopId, userId: req.user.userId } },
       Shops,
       io,
       eventNamesEnum.CyizereSupplierEventNames,
       eventNamesEnum.UPDATE_SUPPLIER
     );
-    if (sendNotification) {
-      await saveNotification(
-        supplierId,
-        userTypesEnum.AGENT,
-        "Cyizere APP Verification",
-        verificationMessage,
-        io
-      );
+    const shop = await Shops.findOne({
+      where: { shopId, userId: req.user.userId },
+    });
+
+    if (!shop) {
+      return res.status(401).json({
+        msg: "Unable to find your shop",
+      });
     }
-    return res.status(200).send({ msg: "Supplier Info updated!" });
+
+    return res.status(200).send({ msg: "Shop Info updated!", shop });
   } catch (err) {
     return res.status(400).send({
       msg: err.message,
@@ -284,9 +298,9 @@ module.exports = {
   register,
   getVerification,
   updateDocument,
-  updateIdNumber,
-  updateImage,
+  updateShopImage,
   adminGetAll,
   udpateShop,
   getAllShops,
+  getMyShop,
 };
