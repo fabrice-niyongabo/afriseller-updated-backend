@@ -42,6 +42,61 @@ const getAll = async (req, res) => {
   }
 };
 
+const getMySingleProduct = async (req, res) => {
+  try {
+    const pId = req.params["id"];
+    if (!pId) {
+      return res.status(200).json({
+        status: "Invalid request",
+        products,
+      });
+    }
+
+    const user = await Users.findOne({
+      where: {
+        userId: req.user.userId,
+      },
+    });
+
+    if (!user) {
+      return res.status(401).send({
+        status: "Error",
+        msg: "Something went wrong",
+      });
+    }
+
+    const product = await Products.findOne({
+      where: { pId, shopId: user.dataValues.shopId },
+    });
+
+    if (!product) {
+      return res.status(400).send({
+        status: "Error",
+        msg: "Unable to find product specified",
+      });
+    }
+
+    const images = await ProductImages.findAll({
+      where: { productId: product.dataValues.pId },
+    });
+    let prices = [];
+    if (product.dataValues.priceType === "many") {
+      prices = await ProductPrices.findAll({
+        where: { productId: product.dataValues.pId },
+      });
+    }
+
+    return res.status(200).json({
+      status: "success",
+      product: { ...product.dataValues, images, prices },
+    });
+  } catch (err) {
+    res.status(400).send({
+      msg: err.message,
+    });
+  }
+};
+
 const getMine = async (req, res) => {
   try {
     const products = [];
@@ -320,7 +375,8 @@ const deleteProduct = async (req, res) => {
 const addPrice = async (req, res) => {
   try {
     const io = req.app.get("socketio");
-    const { productId, name, amount } = req.body;
+
+    const { shopId, productId, name, amount } = req.body;
 
     // Validate user input
     if (!(productId && name && amount)) {
@@ -330,9 +386,22 @@ const addPrice = async (req, res) => {
       });
     }
 
+    const user = await Users.findOne({
+      where: {
+        userId: req.user.userId,
+      },
+    });
+
+    if (!user) {
+      return res.status(401).send({
+        status: "Error",
+        msg: "Something went wrong",
+      });
+    }
+
     //validate product
     const oldproduct = await ProductPrices.findOne({
-      where: { productId, name, supplierId: req.user.supplierId },
+      where: { productId, name, shopId: user.dataValues.shopId },
     });
     if (oldproduct) {
       return res.status(400).send({
@@ -345,11 +414,7 @@ const addPrice = async (req, res) => {
       productId,
       name,
       amount,
-      supplierId: req.user.supplierId,
-    });
-    io.emit(eventNamesEnum.CyizereEventNames, {
-      type: eventNamesEnum.ADD_PRODUCT_PRICE,
-      data: price.dataValues,
+      shopId: user.dataValues.shopId,
     });
     return res.status(201).json({
       status: "success",
@@ -458,7 +523,7 @@ const deletePrice = async (req, res) => {
   }
 };
 
-const updateImage = async (req, res) => {
+const addProductImage = async (req, res) => {
   if (req.fileValidationError) {
     return res.status(400).send({ msg: req.fileValidationError.message });
   }
@@ -472,19 +537,25 @@ const updateImage = async (req, res) => {
         msg: "Please provide correct info",
       });
     }
-    await Products.update(
-      {
-        image: req.file.filename,
+
+    const user = await Users.findOne({
+      where: {
+        userId: req.user.userId,
       },
-      { where: { supplierId: req.user.supplierId, pId } }
-    );
-    const product = await Products.findOne({
-      where: { supplierId: req.user.supplierId, pId },
     });
+
+    if (!user) {
+      return res.status(401).send({
+        status: "Error",
+        msg: "Something went wrong",
+      });
+    }
+
+    await ProductImages.create({ productId: pId, image: req.file.filename });
     return res.status(201).json({
       status: "success",
-      msg: "Product Image Updated successfull!",
-      product,
+      msg: "Product Image added successfull!",
+      image: req.file.filename,
     });
   } catch (err) {
     return res.status(400).send({
@@ -493,8 +564,30 @@ const updateImage = async (req, res) => {
   }
 };
 
+const deleteProductImage = async (req, res) => {
+  try {
+    const id = req.params["id"];
+    if (!id) {
+      return res.status(400).send({
+        status: "Error",
+        msg: "Provide correct info",
+      });
+    }
+    await ProductImages.destroy({ where: { id }, force: true });
+
+    return res.status(200).json({
+      status: "success",
+      msg: "Image deleted successfull!",
+    });
+  } catch (err) {
+    res.status(400).send({
+      msg: err.message,
+    });
+  }
+};
+
 module.exports = {
-  updateImage,
+  addProductImage,
   addProduct,
   getAll,
   adminAll,
@@ -507,4 +600,6 @@ module.exports = {
   updatePrice,
   getMine,
   updateProductStatus,
+  getMySingleProduct,
+  deleteProductImage,
 };
