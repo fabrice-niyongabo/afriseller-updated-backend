@@ -36,6 +36,8 @@ db.product_categories = require("./productCategories")(sequelize, DataTypes);
 db.shops = require("./shops")(sequelize, DataTypes);
 db.products = require("./productsModel")(sequelize, DataTypes);
 db.product_prices = require("./productPricesModel")(sequelize, DataTypes);
+db.product_images = require("./productImages")(sequelize, DataTypes);
+
 db.delivery_fees = require("./deliveryFeesModel")(sequelize, DataTypes);
 db.orders = require("./ordersModel")(sequelize, DataTypes);
 db.wallet = require("./walletModel")(sequelize, DataTypes);
@@ -50,6 +52,7 @@ db.suppliers_payment_details = require("./suppliersPaymentDetails")(
   sequelize,
   DataTypes
 );
+
 db.messages = require("./messages")(sequelize, DataTypes);
 db.agents_wallet = require("./agentsWallet")(sequelize, DataTypes);
 db.agents_fees = require("./agentsFees")(sequelize, DataTypes);

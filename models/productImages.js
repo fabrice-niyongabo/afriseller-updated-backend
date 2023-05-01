@@ -1,28 +1,19 @@
 module.exports = (sequelize, DataTypes) => {
-  const ProductPrices = sequelize.define(
-    "product_prices",
+  const ProductImages = sequelize.define(
+    "product_images",
     {
-      ppId: {
+      id: {
         type: DataTypes.INTEGER,
         primaryKey: true,
         autoIncrement: true,
-        allowNull: false,
-      },
-      shopId: {
-        type: DataTypes.INTEGER,
         allowNull: false,
       },
       productId: {
         type: DataTypes.INTEGER,
         allowNull: false,
       },
-      name: {
+      image: {
         type: DataTypes.STRING,
-        allowNull: false,
-      },
-      amount: {
-        type: DataTypes.DECIMAL(10, 2),
-        defaultValue: 0.0,
         allowNull: false,
       },
     },
@@ -31,5 +22,5 @@ module.exports = (sequelize, DataTypes) => {
     }
   );
 
-  return ProductPrices;
+  return ProductImages;
 };

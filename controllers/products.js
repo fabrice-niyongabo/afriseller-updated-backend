@@ -6,14 +6,31 @@ const db = require("../models");
 const Users = db.users;
 const Products = db.products;
 const ProductPrices = db.product_prices;
+const ProductImages = db.product_images;
 // models
 
 const getAll = async (req, res) => {
   try {
-    const products = await Products.findAll({
+    const products = [];
+    const allProducts = await Products.findAll({
       where: { isActive: true },
       order: [["pId", "DESC"]],
     });
+
+    for (let i = 0; i < allProducts.length; i++) {
+      const images = await ProductImages.findAll({
+        where: { productId: allProducts[i].dataValues.pId },
+      });
+      if (allProducts[i].dataValues.priceType === "many") {
+        const prices = await ProductPrices.findAll({
+          where: { productId: allProducts[i].dataValues.pId },
+        });
+        products.push({ ...allProducts[i].dataValues, prices, images });
+      } else {
+        products.push({ ...allProducts[i].dataValues, prices: [], images });
+      }
+    }
+
     return res.status(200).json({
       status: "success",
       products,
@@ -27,10 +44,26 @@ const getAll = async (req, res) => {
 
 const getMine = async (req, res) => {
   try {
-    const products = await Products.findAll({
-      where: { supplierId: req.user.supplierId },
+    const products = [];
+    const allProducts = await Products.findAll({
+      where: { shopId: req.user.shopId },
       order: [["pId", "DESC"]],
     });
+
+    for (let i = 0; i < allProducts.length; i++) {
+      const images = await ProductImages.findAll({
+        where: { productId: allProducts[i].dataValues.pId },
+      });
+      if (allProducts[i].dataValues.priceType === "many") {
+        const prices = await ProductPrices.findAll({
+          where: { productId: allProducts[i].dataValues.pId },
+        });
+        products.push({ ...allProducts[i].dataValues, prices, images });
+      } else {
+        products.push({ ...allProducts[i].dataValues, prices: [], images });
+      }
+    }
+
     return res.status(200).json({
       status: "success",
       products,
@@ -144,7 +177,7 @@ const updateProduct = async (req, res) => {
     const io = req.app.get("socketio");
     const {
       pId,
-      supplierId,
+      subCategoryId,
       categoryId,
       name,
       description,
@@ -155,12 +188,13 @@ const updateProduct = async (req, res) => {
     if (
       !(
         pId &&
-        supplierId &&
+        subCategoryId &&
         categoryId &&
         name &&
         description &&
         priceType &&
-        singlePrice === undefined
+        singlePrice &&
+        singlePrice !== undefined
       )
     ) {
       return res.status(400).send({
@@ -168,24 +202,42 @@ const updateProduct = async (req, res) => {
         msg: "Please provide correct info",
       });
     }
+
+    const user = await Users.findOne({
+      where: {
+        userId: req.user.userId,
+      },
+    });
+
+    if (!user) {
+      return res.status(401).send({
+        status: "Error",
+        msg: "Something went wrong",
+      });
+    }
+
     await Products.update(
       {
+        subCategoryId,
         categoryId,
         name,
         description,
         priceType,
         singlePrice,
+        singlePrice,
       },
-      { where: { pId, supplierId } }
+      { where: { pId, shopId: user.dataValues.shopId } }
     );
     await handleSocketDataUpdate(
-      { where: { pId } },
+      { where: { pId, shopId: user.dataValues.shopId } },
       Products,
       io,
       eventNamesEnum.CyizereEventNames,
       eventNamesEnum.UPDATE_PRODUCT
     );
-    const product = await Products.findOne({ where: { pId, supplierId } });
+    const product = await Products.findOne({
+      where: { pId, shopId: user.dataValues.shopId },
+    });
     return res.status(200).json({
       status: "success",
       msg: "Product updated successfull!",

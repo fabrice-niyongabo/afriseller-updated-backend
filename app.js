@@ -68,6 +68,7 @@ const packagingFeesRoute = require("./routes/packagingFees");
 const suppliersRoute = require("./routes/suppliers");
 
 const shopsRoute = require("./routes/shops");
+const productImagesRoute = require("./routes/productImages");
 
 app.use("/api/users/", usersRoute);
 app.use("/api/agents/", agentsRoute);
@@ -77,6 +78,7 @@ app.use("/api/shopcategories/", shopCategoriesRoute);
 app.use("/api/productcategories/", productCategoriesRoute);
 app.use("/api/productsubcategories/", productSubCategoriesRoute);
 app.use("/api/shops/", shopsRoute);
+app.use("/api/productimages/", productImagesRoute);
 
 app.use("/api/products/", productsRoute);
 app.use("/api/fees/", feesRoute);

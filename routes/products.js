@@ -21,13 +21,13 @@ const auth = require("../middleware/auth");
 const protectRoute = require("../middleware/protectRoutes");
 
 router.get("/", getAll);
-router.get("/mine", auth, protectRoute(["suppliers"]), getMine);
+router.get("/mine", auth, getMine);
 router.get("/admin/", auth, protectRoute(["admin"]), adminAll);
 router.post("/", auth, uploadImage.single("file"), addProduct);
 router.put("/", auth, updateProduct);
 router.put("/image", auth, uploadImage.single("file"), updateImage);
 router.put("/status", auth, updateProductStatus);
-router.delete("/:id", auth, protectRoute(["admin"]), deleteProduct);
+router.delete("/:id", auth, protectRoute(["seller"]), deleteProduct);
 router.get("/prices/supplier/:id", getAllPrices);
 router.get("/prices/:id", getSingleProductPrices);
 router.post("/prices/", auth, addPrice);
