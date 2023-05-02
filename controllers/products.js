@@ -99,8 +99,22 @@ const getMySingleProduct = async (req, res) => {
 const getMine = async (req, res) => {
   try {
     const products = [];
+
+    const user = await Users.findOne({
+      where: {
+        userId: req.user.userId,
+      },
+    });
+
+    if (!user) {
+      return res.status(401).send({
+        status: "Error",
+        msg: "Please login again to continue",
+      });
+    }
+
     const allProducts = await Products.findAll({
-      where: { shopId: req.user.shopId },
+      where: { shopId: user.dataValues.shopId },
       order: [["pId", "DESC"]],
     });
 
