@@ -48,7 +48,6 @@ const getMySingleProduct = async (req, res) => {
     if (!pId) {
       return res.status(200).json({
         status: "Invalid request",
-        products,
       });
     }
 

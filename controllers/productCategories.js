@@ -31,7 +31,8 @@ const getAll = async (req, res) => {
 const getOne = async (req, res) => {
   try {
     const id = req.params["id"];
-    const category = await Categories.findOne({ id });
+    console.log({ id });
+    const category = await Categories.findOne({ where: { id } });
     if (!category) {
       return res.status(400).send({
         msg: "Invalid category",
