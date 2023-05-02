@@ -28,18 +28,32 @@ const getAll = async (req, res) => {
   }
 };
 
-const addCategory = async (req, res) => {
-  if (req.fileValidationError) {
-    return res.status(400).send({ msg: req.fileValidationError.message });
-  }
-  if (!req.file) {
-    return res.status(400).send({ msg: "No file was uploaded." });
-  }
+const getOne = async (req, res) => {
   try {
-    const { name } = req.body;
+    const id = req.params["id"];
+    const category = await Categories.findOne({ id });
+    if (!category) {
+      return res.status(400).send({
+        msg: "Invalid category",
+      });
+    }
+    return res.status(200).json({
+      status: "success",
+      category,
+    });
+  } catch (err) {
+    res.status(400).send({
+      msg: err.message,
+    });
+  }
+};
+
+const addCategory = async (req, res) => {
+  try {
+    const { name, icon } = req.body;
     const io = req.app.get("socketio");
     // Validate user input
-    if (!name) {
+    if (!(name && icon)) {
       return res.status(400).send({
         status: "Error",
         msg: "Provide correct info",
@@ -47,7 +61,7 @@ const addCategory = async (req, res) => {
     }
     const category = await Categories.create({
       name,
-      image: req.file.filename,
+      icon,
     });
     io.emit(eventNamesEnum.CyizereEventNames, {
       type: eventNamesEnum.ADD_PRODUCT_CATEGORY,
@@ -68,7 +82,7 @@ const addCategory = async (req, res) => {
 const updateCategory = async (req, res) => {
   try {
     const io = req.app.get("socketio");
-    const { name, id } = req.body;
+    const { name, icon, id } = req.body;
     // Validate user input
     if (!(name && id)) {
       return res.status(400).send({
@@ -79,6 +93,7 @@ const updateCategory = async (req, res) => {
     const category = await Categories.update(
       {
         name,
+        icon,
       },
       { where: { id } }
     );
@@ -132,4 +147,99 @@ const deleteCategory = async (req, res) => {
   }
 };
 
-module.exports = { addCategory, getAll, updateCategory, deleteCategory };
+const updateImage = async (req, res) => {
+  try {
+    if (req.fileValidationError) {
+      return res.status(400).send({ msg: req.fileValidationError.message });
+    }
+    if (!req.file) {
+      return res.status(400).send({ msg: "No file was uploaded," });
+    }
+    const { id } = req.body;
+    if (!id) {
+      return res.status(400).send({ msg: "Invalid request" });
+    }
+    await Categories.update(
+      {
+        image: req.file.filename,
+      },
+      { where: { id } }
+    );
+
+    return res.status(200).json({
+      msg: "Image updated successfull.",
+    });
+  } catch (err) {
+    res.status(400).send({
+      msg: err.message,
+    });
+  }
+};
+
+const updateBanner = async (req, res) => {
+  if (req.fileValidationError) {
+    return res.status(400).send({ msg: req.fileValidationError.message });
+  }
+  if (!req.file) {
+    return res.status(400).send({ msg: "No file was uploaded." });
+  }
+  try {
+    const { id } = req.body;
+    if (!id) {
+      return res.status(400).send({ msg: "Invalid request" });
+    }
+    await Categories.update(
+      {
+        banner: req.file.filename,
+      },
+      { where: { id } }
+    );
+    return res.status(200).json({
+      status: "success",
+      msg: "Banner Updated successfull!",
+      image: req.file.filename,
+    });
+  } catch (err) {
+    return res.status(400).send({
+      msg: err.message,
+    });
+  }
+};
+
+const toggleCategory = async (req, res) => {
+  try {
+    const { column, value, id } = req.body;
+    if (!(column !== undefined && value !== undefined && id !== undefined)) {
+      return res.status(400).send({
+        status: "Error",
+        msg: "Provide correct info",
+      });
+    }
+    await Categories.update(
+      {
+        [column]: value,
+      },
+      { where: { id } }
+    );
+
+    return res.status(200).json({
+      status: "success",
+      msg: "Category updated successfull!",
+    });
+  } catch (err) {
+    res.status(400).send({
+      msg: err.message,
+    });
+  }
+};
+
+module.exports = {
+  addCategory,
+  getAll,
+  updateCategory,
+  deleteCategory,
+  getOne,
+  updateImage,
+  updateBanner,
+  toggleCategory,
+};
