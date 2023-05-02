@@ -33,7 +33,7 @@ router.put("/toggle", auth, toggleProduct);
 router.post(
   "/image",
   auth,
-  protectRoute(["admin"]),
+  protectRoute(["admin", "seller"]),
   uploadImage.single("file"),
   addProductImage
 );
