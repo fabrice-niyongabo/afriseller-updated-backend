@@ -132,7 +132,25 @@ const getMine = async (req, res) => {
 
 const adminAll = async (req, res) => {
   try {
-    const products = await Products.findAll({ order: [["pId", "DESC"]] });
+    const products = [];
+    const allProducts = await Products.findAll({
+      order: [["pId", "DESC"]],
+    });
+
+    for (let i = 0; i < allProducts.length; i++) {
+      const images = await ProductImages.findAll({
+        where: { productId: allProducts[i].dataValues.pId },
+      });
+      if (allProducts[i].dataValues.priceType === "many") {
+        const prices = await ProductPrices.findAll({
+          where: { productId: allProducts[i].dataValues.pId },
+        });
+        products.push({ ...allProducts[i].dataValues, prices, images });
+      } else {
+        products.push({ ...allProducts[i].dataValues, prices: [], images });
+      }
+    }
+
     return res.status(200).json({
       status: "success",
       products,
@@ -586,6 +604,33 @@ const deleteProductImage = async (req, res) => {
   }
 };
 
+const toggleProduct = async (req, res) => {
+  try {
+    const { column, value, pId } = req.body;
+    if (!(column !== undefined && value !== undefined && pId !== undefined)) {
+      return res.status(400).send({
+        status: "Error",
+        msg: "Provide correct info",
+      });
+    }
+    await Products.update(
+      {
+        [column]: value,
+      },
+      { where: { pId } }
+    );
+
+    return res.status(200).json({
+      status: "success",
+      msg: "Product updated!",
+    });
+  } catch (err) {
+    res.status(400).send({
+      msg: err.message,
+    });
+  }
+};
+
 module.exports = {
   addProductImage,
   addProduct,
@@ -602,4 +647,5 @@ module.exports = {
   updateProductStatus,
   getMySingleProduct,
   deleteProductImage,
+  toggleProduct,
 };

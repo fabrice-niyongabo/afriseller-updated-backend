@@ -172,7 +172,10 @@ const updateShopImage = async (req, res) => {
 
 const getAllShops = async (req, res) => {
   try {
-    const shops = await Shops.findAll({});
+    const shops = await Shops.findAll({
+      where: { isDisabled: false },
+      order: [["shopId", "DESC"]],
+    });
     return res.status(200).json({
       shops,
     });

@@ -16,6 +16,7 @@ const {
   getMySingleProduct,
   addProductImage,
   deleteProductImage,
+  toggleProduct,
 } = require("../controllers/products");
 const { uploadImage } = require("../controllers/upload");
 
@@ -28,7 +29,14 @@ router.get("/mine", auth, getMine);
 router.get("/admin/", auth, protectRoute(["admin"]), adminAll);
 router.post("/", auth, uploadImage.single("file"), addProduct);
 router.put("/", auth, updateProduct);
-router.post("/image", auth, uploadImage.single("file"), addProductImage);
+router.put("/toggle", auth, toggleProduct);
+router.post(
+  "/image",
+  auth,
+  protectRoute(["admin"]),
+  uploadImage.single("file"),
+  addProductImage
+);
 router.delete("/image/:id", auth, protectRoute(["seller"]), deleteProductImage);
 router.put("/status", auth, updateProductStatus);
 router.delete("/:id", auth, protectRoute(["seller"]), deleteProduct);
