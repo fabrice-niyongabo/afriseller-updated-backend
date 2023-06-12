@@ -36,6 +36,15 @@ module.exports = (sequelize, DataTypes) => {
         defaultValue: 0.0,
         allowNull: false,
       },
+      brandName: {
+        type: DataTypes.TEXT,
+      },
+      productId: {
+        type: DataTypes.TEXT,
+      },
+      variation: {
+        type: DataTypes.TEXT,
+      },
       isActive: {
         type: DataTypes.BOOLEAN,
         defaultValue: true,
