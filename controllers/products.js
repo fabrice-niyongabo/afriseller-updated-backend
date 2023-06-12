@@ -185,6 +185,9 @@ const addProduct = async (req, res) => {
       description,
       priceType,
       singlePrice,
+      brandName,
+      productId,
+      variation,
     } = req.body;
 
     // Validate user input
@@ -241,6 +244,9 @@ const addProduct = async (req, res) => {
       description,
       priceType,
       singlePrice,
+      brandName,
+      productId,
+      variation,
     });
     // io.emit(eventNamesEnum.CyizereEventNames, {
     //   type: eventNamesEnum.ADD_PRODUCT,
@@ -269,6 +275,9 @@ const updateProduct = async (req, res) => {
       description,
       priceType,
       singlePrice,
+      brandName,
+      productId,
+      variation,
     } = req.body;
     // Validate user input
     if (
@@ -311,6 +320,9 @@ const updateProduct = async (req, res) => {
         priceType,
         singlePrice,
         singlePrice,
+        brandName,
+        productId,
+        variation,
       },
       { where: { pId, shopId: user.dataValues.shopId } }
     );
