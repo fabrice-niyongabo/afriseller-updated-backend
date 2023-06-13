@@ -1,5 +1,9 @@
 const { Op, JSON } = require("sequelize");
-const { eventNamesEnum, handleSocketDataUpdate } = require("../helpers");
+const {
+  eventNamesEnum,
+  handleSocketDataUpdate,
+  parseData,
+} = require("../helpers");
 const db = require("../models");
 
 // models
@@ -28,14 +32,14 @@ const getAll = async (req, res) => {
         products.push({
           ...allProducts[i].dataValues,
           prices,
-          variations: JSON.parse(allProducts[i].variations),
+          variations: parseData(allProducts[i].variations),
           images,
         });
       } else {
         products.push({
           ...allProducts[i].dataValues,
           prices: [],
-          variations: JSON.parse(allProducts[i].variations),
+          variations: parseData(allProducts[i].variations),
           images,
         });
       }
@@ -99,7 +103,7 @@ const getMySingleProduct = async (req, res) => {
       status: "success",
       product: {
         ...product.dataValues,
-        variations: JSON.parse(product.variations),
+        variations: parseData(product.variations),
         images,
         prices,
       },
@@ -143,7 +147,7 @@ const getMine = async (req, res) => {
         });
         products.push({
           ...allProducts[i].dataValues,
-          variations: JSON.parse(allProducts[i].variations),
+          variations: parseData(allProducts[i].variations),
           prices,
           images,
         });
@@ -151,7 +155,7 @@ const getMine = async (req, res) => {
         products.push({
           ...allProducts[i].dataValues,
           prices: [],
-          variations: JSON.parse(allProducts[i].variations),
+          variations: parseData(allProducts[i].variations),
           images,
         });
       }

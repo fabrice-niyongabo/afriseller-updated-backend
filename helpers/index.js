@@ -284,6 +284,15 @@ const handleSocketDataUpdate = async (
   return false;
 };
 
+const parseData = (data) => {
+  try {
+    const res = JSON.parse(data);
+    return res;
+  } catch (error) {
+    return null;
+  }
+};
+
 module.exports = {
   getCurrentDateTime,
   userTypesEnum,
@@ -297,4 +306,5 @@ module.exports = {
   handleSocketDataUpdate,
   saveAdminNotification,
   userRolesEnum,
+  parseData,
 };
