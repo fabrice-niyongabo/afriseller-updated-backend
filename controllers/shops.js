@@ -28,11 +28,13 @@ const register = async (req, res) => {
       address,
       open,
       close,
+      country,
     } = req.body;
 
     // Validate user input
     if (
       !(
+        country &&
         shopName &&
         description &&
         address &&
@@ -59,6 +61,7 @@ const register = async (req, res) => {
       open,
       close,
       userId: req.user.userId,
+      country,
     });
 
     //update user details

@@ -21,7 +21,7 @@ module.exports = (sequelize, DataTypes) => {
         allowNull: false,
       },
       phone: {
-        type: DataTypes.STRING(15),
+        type: DataTypes.STRING(18),
         unique: {
           args: true,
           msg: "Phone number already in use!",

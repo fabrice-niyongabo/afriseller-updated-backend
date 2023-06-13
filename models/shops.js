@@ -17,6 +17,10 @@ module.exports = (sequelize, DataTypes) => {
           msg: "You already own a shop",
         },
       },
+      country: {
+        type: DataTypes.STRING(100),
+        allowNull: false,
+      },
       shopName: {
         type: DataTypes.STRING(100),
         allowNull: false,
