@@ -317,7 +317,6 @@ const updateProduct = async (req, res) => {
         name &&
         description &&
         priceType &&
-        singlePrice &&
         singlePrice !== undefined
       )
     ) {
