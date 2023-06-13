@@ -42,7 +42,7 @@ module.exports = (sequelize, DataTypes) => {
       productId: {
         type: DataTypes.TEXT,
       },
-      variation: {
+      variations: {
         type: DataTypes.TEXT,
       },
       isActive: {

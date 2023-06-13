@@ -1,4 +1,4 @@
-const { Op } = require("sequelize");
+const { Op, JSON } = require("sequelize");
 const { eventNamesEnum, handleSocketDataUpdate } = require("../helpers");
 const db = require("../models");
 
@@ -25,9 +25,19 @@ const getAll = async (req, res) => {
         const prices = await ProductPrices.findAll({
           where: { productId: allProducts[i].dataValues.pId },
         });
-        products.push({ ...allProducts[i].dataValues, prices, images });
+        products.push({
+          ...allProducts[i].dataValues,
+          prices,
+          variations: JSON.parse(allProducts[i].variations),
+          images,
+        });
       } else {
-        products.push({ ...allProducts[i].dataValues, prices: [], images });
+        products.push({
+          ...allProducts[i].dataValues,
+          prices: [],
+          variations: JSON.parse(allProducts[i].variations),
+          images,
+        });
       }
     }
 
@@ -87,7 +97,12 @@ const getMySingleProduct = async (req, res) => {
 
     return res.status(200).json({
       status: "success",
-      product: { ...product.dataValues, images, prices },
+      product: {
+        ...product.dataValues,
+        variations: JSON.parse(product.variations),
+        images,
+        prices,
+      },
     });
   } catch (err) {
     res.status(400).send({
@@ -126,9 +141,19 @@ const getMine = async (req, res) => {
         const prices = await ProductPrices.findAll({
           where: { productId: allProducts[i].dataValues.pId },
         });
-        products.push({ ...allProducts[i].dataValues, prices, images });
+        products.push({
+          ...allProducts[i].dataValues,
+          variations: JSON.parse(allProducts[i].variations),
+          prices,
+          images,
+        });
       } else {
-        products.push({ ...allProducts[i].dataValues, prices: [], images });
+        products.push({
+          ...allProducts[i].dataValues,
+          prices: [],
+          variations: JSON.parse(allProducts[i].variations),
+          images,
+        });
       }
     }
 
@@ -187,7 +212,7 @@ const addProduct = async (req, res) => {
       singlePrice,
       brandName,
       productId,
-      variation,
+      variations,
     } = req.body;
 
     // Validate user input
@@ -246,7 +271,7 @@ const addProduct = async (req, res) => {
       singlePrice,
       brandName,
       productId,
-      variation,
+      variations,
     });
     // io.emit(eventNamesEnum.CyizereEventNames, {
     //   type: eventNamesEnum.ADD_PRODUCT,
@@ -277,7 +302,7 @@ const updateProduct = async (req, res) => {
       singlePrice,
       brandName,
       productId,
-      variation,
+      variations,
     } = req.body;
     // Validate user input
     if (
@@ -322,7 +347,7 @@ const updateProduct = async (req, res) => {
         singlePrice,
         brandName,
         productId,
-        variation,
+        variations,
       },
       { where: { pId, shopId: user.dataValues.shopId } }
     );
