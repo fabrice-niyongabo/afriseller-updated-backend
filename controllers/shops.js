@@ -175,10 +175,16 @@ const updateShopImage = async (req, res) => {
 
 const getAllShops = async (req, res) => {
   try {
-    const shops = await Shops.findAll({
-      where: { isDisabled: false },
-      order: [["shopId", "DESC"]],
-    });
+    const { country } = req.query;
+    const shops = country
+      ? await Shops.findAll({
+          where: { isDisabled: false, country },
+          order: [["shopId", "DESC"]],
+        })
+      : await Shops.findAll({
+          where: { isDisabled: false },
+          order: [["shopId", "DESC"]],
+        });
     return res.status(200).json({
       shops,
     });
