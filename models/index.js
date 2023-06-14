@@ -85,4 +85,7 @@ db.sequelize.sync({ force: false }).then(() => {
 // db.dishes.hasMany(db.dish_products, { foreignKey: "dishId", as: "products" });
 // db.dish_products.belongsTo(db.dishes, { foreignKey: "dishId", as: "dish" });
 
+db.shops.hasMany(db.products, { foreignKey: "shopId" });
+db.products.belongsTo(db.shops, { foreignKey: "shopId" });
+
 module.exports = db;

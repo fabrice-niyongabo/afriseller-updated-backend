@@ -11,15 +11,23 @@ const Users = db.users;
 const Products = db.products;
 const ProductPrices = db.product_prices;
 const ProductImages = db.product_images;
+const Shops = db.shops;
 // models
 
 const getAll = async (req, res) => {
   try {
+    const { country } = req.query;
     const products = [];
-    const allProducts = await Products.findAll({
-      where: { isActive: true },
-      order: [["pId", "DESC"]],
-    });
+    const allProducts = country
+      ? await Products.findAll({
+          include: { model: Shops, as: "shop", where: { country } },
+          where: { isActive: true },
+          order: [["pId", "DESC"]],
+        })
+      : await Products.findAll({
+          where: { isActive: true },
+          order: [["pId", "DESC"]],
+        });
 
     for (let i = 0; i < allProducts.length; i++) {
       const images = await ProductImages.findAll({
