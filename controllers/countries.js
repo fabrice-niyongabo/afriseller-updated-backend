@@ -7,7 +7,10 @@ const Countries = db.countries;
 
 const getAll = async (req, res) => {
   try {
-    const countries = await Countries.findAll({ where: { isActive: true } });
+    const countries = await Countries.findAll({
+      where: { isActive: true },
+      order: [["name", "DESC"]],
+    });
     return res.status(200).json({
       countries,
     });
