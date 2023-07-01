@@ -18,6 +18,19 @@ const getAll = async (req, res) => {
   }
 };
 
+const adminGetAll = async (req, res) => {
+  try {
+    const countries = await Countries.findAll({});
+    return res.status(200).json({
+      countries,
+    });
+  } catch (err) {
+    res.status(400).send({
+      msg: err.message,
+    });
+  }
+};
+
 const updateCountry = async (req, res) => {
   try {
     const { name } = req.body;
@@ -52,4 +65,4 @@ const updateCountry = async (req, res) => {
   }
 };
 
-module.exports = { getAll, updateCountry };
+module.exports = { getAll, updateCountry, adminGetAll };
