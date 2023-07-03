@@ -225,6 +225,7 @@ const addProduct = async (req, res) => {
       brandName,
       productId,
       variations,
+      currency,
     } = req.body;
 
     // Validate user input
@@ -234,8 +235,8 @@ const addProduct = async (req, res) => {
         name &&
         description &&
         priceType &&
-        singlePrice !== undefined &&
-        subCategoryId
+        subCategoryId &&
+        currency
       )
     ) {
       return res.status(400).send({
@@ -280,10 +281,10 @@ const addProduct = async (req, res) => {
       name,
       description,
       priceType,
-      singlePrice,
       brandName,
       productId,
       variations,
+      currency,
     });
     // io.emit(eventNamesEnum.CyizereEventNames, {
     //   type: eventNamesEnum.ADD_PRODUCT,
@@ -311,7 +312,7 @@ const updateProduct = async (req, res) => {
       name,
       description,
       priceType,
-      singlePrice,
+      currency,
       brandName,
       productId,
       variations,
@@ -325,7 +326,7 @@ const updateProduct = async (req, res) => {
         name &&
         description &&
         priceType &&
-        singlePrice !== undefined
+        currency
       )
     ) {
       return res.status(400).send({
@@ -354,8 +355,7 @@ const updateProduct = async (req, res) => {
         name,
         description,
         priceType,
-        singlePrice,
-        singlePrice,
+        currency,
         brandName,
         productId,
         variations,
