@@ -1,8 +1,6 @@
-const { verificationStatusEnum } = require("../helpers");
-
 module.exports = (sequelize, DataTypes) => {
-  const ShippingOptions = sequelize.define(
-    "shippingOptions",
+  const shippingEstimations = sequelize.define(
+    "shipping_estimations",
     {
       id: {
         type: DataTypes.INTEGER,
@@ -42,5 +40,5 @@ module.exports = (sequelize, DataTypes) => {
     }
   );
 
-  return ShippingOptions;
+  return shippingEstimations;
 };

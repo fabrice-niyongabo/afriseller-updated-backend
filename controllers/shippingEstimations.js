@@ -13,8 +13,9 @@ const getSingle = async (req, res) => {
         msg: "Prease provide correct info",
       });
     }
-
-    const estimations = ShippingEstimations.findAll({ where: { userId } });
+    const estimations = await ShippingEstimations.findAll({
+      where: { userId },
+    });
     return res.status(200).json({
       estimations,
     });
@@ -27,7 +28,7 @@ const getSingle = async (req, res) => {
 
 const adminAll = async (req, res) => {
   try {
-    const estimations = ShippingEstimations.findAll({});
+    const estimations = await ShippingEstimations.findAll({});
     return res.status(200).json({
       estimations,
     });
@@ -100,8 +101,7 @@ const addEstimation = async (req, res) => {
 
 const updateEstimation = async (req, res) => {
   try {
-    const { id, toCountry, amount, currency, minAmount, maxAmount, shopId } =
-      req.body;
+    const { id, toCountry, currency, minAmount, maxAmount, shopId } = req.body;
     // Validate user input
     if (!(id && toCountry && minAmount && maxAmount && currency && shopId)) {
       return res.status(400).send({

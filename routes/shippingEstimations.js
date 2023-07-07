@@ -4,6 +4,7 @@ const {
   getSingle,
   addEstimation,
   updateEstimation,
+  deleteEstimation,
   adminAll,
 } = require("../controllers/shippingEstimations");
 const auth = require("../middleware/auth");
@@ -14,5 +15,6 @@ router.get("/all", auth, protectRoute(["admin"]), adminAll);
 
 router.post("/", auth, addEstimation);
 router.put("/", auth, updateEstimation);
+router.delete("/:id", auth, deleteEstimation);
 
 module.exports = router;
