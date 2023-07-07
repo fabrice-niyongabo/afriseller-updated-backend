@@ -24,7 +24,11 @@ module.exports = (sequelize, DataTypes) => {
         type: DataTypes.STRING(100),
         allowNull: false,
       },
-      amount: {
+      minAmount: {
+        type: DataTypes.DECIMAL(10, 2),
+        allowNull: false,
+      },
+      maxAmount: {
         type: DataTypes.DECIMAL(10, 2),
         allowNull: false,
       },

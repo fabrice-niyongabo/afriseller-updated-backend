@@ -7,14 +7,14 @@ const ShippingEstimations = db.shipping_estimations;
 
 const getSingle = async (req, res) => {
   try {
-    const { supplierId } = req.params["id"];
-    if (!supplierId) {
+    const userId = req.params["id"];
+    if (!userId) {
       return res.status(400).json({
         msg: "Prease provide correct info",
       });
     }
 
-    const estimations = ShippingEstimations.findAll({ supplierId });
+    const estimations = ShippingEstimations.findAll({ where: { userId } });
     return res.status(200).json({
       estimations,
     });
@@ -40,10 +40,10 @@ const adminAll = async (req, res) => {
 
 const addEstimation = async (req, res) => {
   try {
-    const { fromCountry, toCountry, amount, currency } = req.body;
+    const { fromCountry, toCountry, minAmount, maxAmount, currency } = req.body;
 
     // Validate user input
-    if (!(fromCountry && toCountry && amount && currency)) {
+    if (!(fromCountry && toCountry && minAmount && maxAmount && currency)) {
       return res.status(400).send({
         status: "Error",
         msg: "Provide correct info",
@@ -82,7 +82,8 @@ const addEstimation = async (req, res) => {
       shopId: shop.dataValues.shopId,
       fromCountry,
       toCountry,
-      amount,
+      minAmount,
+      maxAmount,
       currency,
     });
     return res.status(201).json({
@@ -99,10 +100,10 @@ const addEstimation = async (req, res) => {
 
 const updateEstimation = async (req, res) => {
   try {
-    const io = req.app.get("socketio");
-    const { id, toCountry, amount, currency, shopId } = req.body;
+    const { id, toCountry, amount, currency, minAmount, maxAmount, shopId } =
+      req.body;
     // Validate user input
-    if (!(id && toCountry && amount && currency && shopId)) {
+    if (!(id && toCountry && minAmount && maxAmount && currency && shopId)) {
       return res.status(400).send({
         status: "Error",
         msg: "Please provide correct info",
@@ -113,7 +114,8 @@ const updateEstimation = async (req, res) => {
       {
         toCountry,
         currency,
-        amount,
+        minAmount,
+        maxAmount,
       },
       { where: { id, shopId, userId: req.user.userId } }
     );

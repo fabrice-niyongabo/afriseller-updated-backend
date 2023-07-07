@@ -4,7 +4,6 @@ const {
   getSingle,
   addEstimation,
   updateEstimation,
-  addEstimation,
   adminAll,
 } = require("../controllers/shippingEstimations");
 const auth = require("../middleware/auth");
