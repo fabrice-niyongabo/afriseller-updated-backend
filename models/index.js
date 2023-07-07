@@ -66,7 +66,10 @@ db.system_fees = require("./systemFees")(sequelize, DataTypes);
 db.packaging_fees = require("./packagingFees")(sequelize, DataTypes);
 db.suppliers = require("./suppliers")(sequelize, DataTypes);
 db.countries = require("./countries")(sequelize, DataTypes);
-db.shipping_options = require("./shippingOptions")(sequelize, DataTypes);
+db.shipping_estimations = require("./shippingEstimations")(
+  sequelize,
+  DataTypes
+);
 //modles
 
 db.sequelize.sync({ force: false }).then(() => {
