@@ -36,6 +36,7 @@ const getAll = async (req, res) => {
       if (allProducts[i].dataValues.priceType === "many") {
         const prices = await ProductPrices.findAll({
           where: { productId: allProducts[i].dataValues.pId },
+          order: [["amount", "ASC"]],
         });
         products.push({
           ...allProducts[i].dataValues,
