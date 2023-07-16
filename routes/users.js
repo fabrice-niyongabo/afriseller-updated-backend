@@ -19,7 +19,12 @@ router.post("/register", register);
 router.get("/", auth, protectRoute(["admin"]), adminGetAll);
 router.put("/", auth, protectRoute(["admin"]), updateUserStatus);
 router.put("/pwd", auth, protectRoute(["client", "admin"]), updatePwd);
-router.put("/info", auth, protectRoute(["client", "admin"]), updateInfo);
+router.put(
+  "/info",
+  auth,
+  protectRoute(["client", "admin", "seller"]),
+  updateInfo
+);
 router.put(
   "/image",
   auth,
