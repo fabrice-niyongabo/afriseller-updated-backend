@@ -18,7 +18,12 @@ router.post("/login", login);
 router.post("/register", register);
 router.get("/", auth, protectRoute(["admin"]), adminGetAll);
 router.put("/", auth, protectRoute(["admin"]), updateUserStatus);
-router.put("/pwd", auth, protectRoute(["client", "admin"]), updatePwd);
+router.put(
+  "/pwd",
+  auth,
+  protectRoute(["client", "admin", "seller"]),
+  updatePwd
+);
 router.put(
   "/info",
   auth,
