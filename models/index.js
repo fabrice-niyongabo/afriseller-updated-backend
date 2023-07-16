@@ -70,6 +70,7 @@ db.shipping_estimations = require("./shippingEstimations")(
   sequelize,
   DataTypes
 );
+db.wishlist = require("./wishlist")(sequelize, DataTypes);
 //modles
 
 db.sequelize.sync({ force: false }).then(() => {
