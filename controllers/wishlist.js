@@ -72,10 +72,10 @@ const addTowishList = async (req, res) => {
 
 const removeFromwishList = async (req, res) => {
   try {
-    const id = req.params["id"];
+    const productId = req.params["id"];
 
     // Validate user input
-    if (!id) {
+    if (!productId) {
       return res.status(400).send({
         status: "Error",
         msg: "Provide correct info",
@@ -83,7 +83,7 @@ const removeFromwishList = async (req, res) => {
     }
 
     await Wishlist.destroy({
-      where: { id, userId: req.userId },
+      where: { productId, userId: req.user.userId },
       force: true,
     });
     return res.status(201).json({
