@@ -87,7 +87,7 @@ const removeFromwishList = async (req, res) => {
       force: true,
     });
     return res.status(201).json({
-      msg: "Product has been added to your wishlist!",
+      msg: "Product has been removed from your wishlist!",
     });
   } catch (err) {
     return res.status(400).send({
