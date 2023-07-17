@@ -50,9 +50,9 @@ const addTowishList = async (req, res) => {
     });
 
     if (exists) {
-      return res
-        .status(400)
-        .json({ msg: exists.name + " already exists from your wishlist" });
+      return res.status(400).json({
+        msg: "Product already exists from your wishlist",
+      });
     }
 
     await Wishlist.create({ productId, userId: req.user.userId });
