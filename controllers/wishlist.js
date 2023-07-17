@@ -4,6 +4,7 @@ const db = require("../models");
 // models
 const Wishlist = db.wishlist;
 const Products = db.products;
+const ProductImages = db.product_images;
 // models
 
 const getAll = async (req, res) => {
@@ -19,12 +20,15 @@ const getAll = async (req, res) => {
         where: { pId: allWishes[i].dataValues.productId },
       });
       if (prod) {
-        products.push(prod);
+        const images = await ProductImages.findAll({
+          where: { productId: allWishes[i].dataValues.productId },
+        });
+        products.push({ ...prod.dataValues, images });
       }
     }
 
     return res.status(200).json({
-      products,
+      list: products,
     });
   } catch (err) {
     return res.status(400).send({
