@@ -107,7 +107,7 @@ const updateBooking = async (req, res) => {
   }
 };
 
-const deleteDish = async (req, res) => {
+const deleteBooking = async (req, res) => {
   try {
     const id = req.params["id"];
     // Validate user input
@@ -135,5 +135,5 @@ module.exports = {
   adminAll,
   addBooking,
   updateBooking,
-  deleteDish,
+  deleteBooking,
 };
