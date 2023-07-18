@@ -1,0 +1,42 @@
+module.exports = (sequelize, DataTypes) => {
+  const Booking = sequelize.define(
+    "booking",
+    {
+      id: {
+        type: DataTypes.INTEGER,
+        primaryKey: true,
+        autoIncrement: true,
+        allowNull: false,
+      },
+      userId: {
+        type: DataTypes.INTEGER,
+        allowNull: false,
+      },
+      productId: {
+        type: DataTypes.INTEGER,
+        allowNull: false,
+      },
+      quantity: {
+        type: DataTypes.INTEGER,
+        allowNull: false,
+      },
+      description: {
+        type: DataTypes.TEXT,
+        allowNull: false,
+      },
+      from: {
+        type: DataTypes.STRING(50),
+        allowNull: false,
+      },
+      to: {
+        type: DataTypes.STRING(50),
+        allowNull: false,
+      },
+    },
+    {
+      timestamps: true,
+    }
+  );
+
+  return Booking;
+};
