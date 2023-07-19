@@ -26,6 +26,10 @@ module.exports = (sequelize, DataTypes) => {
         type: DataTypes.TEXT,
         allowNull: false,
       },
+      shippingCountry: {
+        type: DataTypes.STRING(100),
+        allowNull: false,
+      },
       from: {
         type: DataTypes.STRING(50),
         allowNull: false,

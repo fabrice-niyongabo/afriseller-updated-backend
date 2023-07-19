@@ -4,6 +4,7 @@ const db = require("../models");
 // models
 const Booking = db.booking;
 const Products = db.products;
+const ProductImages = db.product_images;
 // models
 
 const getAll = async (req, res) => {
@@ -16,7 +17,13 @@ const getAll = async (req, res) => {
       const product = await Products.findOne({
         where: { pId: allBooking[i].dataValues.productId },
       });
-      booking.push({ ...allBooking[i].dataValues, product });
+      const images = await ProductImages.findAll({
+        where: { productId: allBooking[i].dataValues.productId },
+      });
+      booking.push({
+        ...allBooking[i].dataValues,
+        product: { ...product.dataValues, images },
+      });
     }
     return res.status(200).json({
       booking,
@@ -44,9 +51,12 @@ const adminAll = async (req, res) => {
 
 const addBooking = async (req, res) => {
   try {
-    const { quantity, from, to, description, productId } = req.body;
+    const { quantity, from, to, description, productId, shippingCountry } =
+      req.body;
     // Validate user input
-    if (!(quantity && from && to && description && productId)) {
+    if (
+      !(quantity && from && to && description && productId && shippingCountry)
+    ) {
       return res.status(400).send({
         status: "Error",
         msg: "Provide correct info",
@@ -63,6 +73,7 @@ const addBooking = async (req, res) => {
     }
 
     const book = await Booking.create({
+      shippingCountry,
       quantity,
       from,
       to,
@@ -85,9 +96,9 @@ const addBooking = async (req, res) => {
 const updateBooking = async (req, res) => {
   try {
     const io = req.app.get("socketio");
-    const { quantity, from, to, description, id } = req.body;
+    const { quantity, from, to, description, shippingCountry, id } = req.body;
     // Validate user input
-    if (!(quantity && from && to && description && id)) {
+    if (!(quantity && from && to && description && id && shippingCountry)) {
       return res.status(400).send({
         status: "Error",
         msg: "Provide correct info",
@@ -99,6 +110,7 @@ const updateBooking = async (req, res) => {
         from,
         to,
         description,
+        shippingCountry,
       },
       { where: { id } }
     );
