@@ -1,5 +1,4 @@
 const { Op } = require("sequelize");
-const { handleSocketDataUpdate, eventNamesEnum } = require("../helpers");
 const db = require("../models");
 
 // models
@@ -9,9 +8,16 @@ const Products = db.products;
 
 const getAll = async (req, res) => {
   try {
-    const booking = await Booking.findAll({
+    const booking = [];
+    const allBooking = await Booking.findAll({
       where: { userId: req.user.userId },
     });
+    for (let i = 0; i < allBooking.length; i++) {
+      const product = await Products.findOne({
+        where: { pId: allBooking[i].dataValues.productId },
+      });
+      booking.push({ ...allBooking[i].dataValues, product });
+    }
     return res.status(200).json({
       booking,
     });
@@ -66,7 +72,7 @@ const addBooking = async (req, res) => {
     });
     return res.status(201).json({
       status: "success",
-      msg: "Product booked successfull!",
+      msg: "Product booked!",
       book,
     });
   } catch (err) {
