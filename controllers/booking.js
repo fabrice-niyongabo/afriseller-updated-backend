@@ -5,6 +5,7 @@ const db = require("../models");
 const Booking = db.booking;
 const Products = db.products;
 const ProductImages = db.product_images;
+const Users = db.users;
 // models
 
 const getAll = async (req, res) => {
@@ -23,6 +24,39 @@ const getAll = async (req, res) => {
       booking.push({
         ...allBooking[i].dataValues,
         product: { ...product.dataValues, images },
+      });
+    }
+    return res.status(200).json({
+      booking,
+    });
+  } catch (err) {
+    return res.status(400).send({
+      msg: err.message,
+    });
+  }
+};
+
+const getMine = async (req, res) => {
+  try {
+    const shopId = req.params["id"];
+    const booking = [];
+    const allBooking = await Booking.findAll({
+      where: { shopId },
+    });
+    for (let i = 0; i < allBooking.length; i++) {
+      const product = await Products.findOne({
+        where: { pId: allBooking[i].dataValues.productId },
+      });
+      const images = await ProductImages.findAll({
+        where: { productId: allBooking[i].dataValues.productId },
+      });
+      const user = await Users.findAll({
+        where: { userId: allBooking[i].dataValues.userId },
+      });
+      booking.push({
+        ...allBooking[i].dataValues,
+        product: { ...product.dataValues, images },
+        user,
       });
     }
     return res.status(200).json({
@@ -163,4 +197,5 @@ module.exports = {
   addBooking,
   updateBooking,
   deleteBooking,
+  getMine,
 };
