@@ -63,6 +63,15 @@ const addBooking = async (req, res) => {
       });
     }
 
+    const prod = await Products.findOne({ where: { pId: productId } });
+
+    if (!prod) {
+      return res.status(400).send({
+        status: "Error",
+        msg: "Please provide correct info",
+      });
+    }
+
     const exists = await Booking.findOne({
       where: { quantity, from, to, description, productId },
     });
@@ -79,6 +88,7 @@ const addBooking = async (req, res) => {
       to,
       description,
       productId,
+      shopId: prod.shopId,
       userId: req.user.userId,
     });
     return res.status(201).json({
@@ -95,7 +105,6 @@ const addBooking = async (req, res) => {
 
 const updateBooking = async (req, res) => {
   try {
-    const io = req.app.get("socketio");
     const { quantity, from, to, description, shippingCountry, id } = req.body;
     // Validate user input
     if (!(quantity && from && to && description && id && shippingCountry)) {
