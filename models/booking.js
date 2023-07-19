@@ -1,3 +1,5 @@
+const { statusEnum } = require("../helpers");
+
 module.exports = (sequelize, DataTypes) => {
   const Booking = sequelize.define(
     "booking",
@@ -31,6 +33,10 @@ module.exports = (sequelize, DataTypes) => {
       to: {
         type: DataTypes.STRING(50),
         allowNull: false,
+      },
+      status: {
+        type: DataTypes.STRING(50),
+        defaultValue: statusEnum.PENDING,
       },
     },
     {

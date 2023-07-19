@@ -27,10 +27,8 @@ const userRolesEnum = {
 
 const statusEnum = {
   PENDING: "PENDING",
-  WAITING: "WAITING",
-  FAILED: "FAILED",
-  SUCCESS: "SUCCESS",
-  COMPLETED: "COMPLETED",
+  APPROVED: "APPROVED",
+  REJECTED: "REJECTED",
 };
 const agentsEarningTypesEnum = {
   AMOUNT: "AMOUNT",
