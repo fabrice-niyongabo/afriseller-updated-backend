@@ -13,7 +13,7 @@ const auth = require("../middleware/auth");
 const protectRoute = require("../middleware/protectRoutes");
 
 router.get("/", auth, getAll);
-router.get("/:id", auth, protectRoute(["suppliers"]), getMine);
+router.get("/:id", auth, protectRoute(["seller"]), getMine);
 router.post("/", auth, addBooking);
 router.put("/", auth, updateBooking);
 router.delete("/:id", auth, deleteBooking);

@@ -50,7 +50,7 @@ const getMine = async (req, res) => {
       const images = await ProductImages.findAll({
         where: { productId: allBooking[i].dataValues.productId },
       });
-      const user = await Users.findAll({
+      const user = await Users.findOne({
         where: { userId: allBooking[i].dataValues.userId },
       });
       booking.push({
