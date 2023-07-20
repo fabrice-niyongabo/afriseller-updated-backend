@@ -35,9 +35,10 @@ const getAll = async (req, res) => {
 
 const getRequestedServicesFiles = async (req, res) => {
   try {
-    const requestId = req.params(["id"]);
+    const requestId = req.params["id"];
     const files = await RequestedServicesFiles.findAll({
       where: { requestId },
+      order: [["id", "DESC"]],
     });
 
     return res.status(200).json({
@@ -126,7 +127,7 @@ const addRequestedServiceFiles = async (req, res) => {
     }
     const { serviceId, requestId, fileType, comment } = req.body;
     // Validate user input
-    if (!(serviceId && requestId && userId && fileType && comment)) {
+    if (!(serviceId && requestId && fileType && comment)) {
       return res.status(400).send({
         status: "Error",
         msg: "Provide correct info",
@@ -139,7 +140,7 @@ const addRequestedServiceFiles = async (req, res) => {
       fileType,
       comment,
       file: req.file.filename,
-      userId: req.user.userId,
+      addedByuserId: req.user.userId,
     });
     return res.status(201).json({
       status: "success",

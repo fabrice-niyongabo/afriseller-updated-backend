@@ -16,7 +16,7 @@ module.exports = (sequelize, DataTypes) => {
         type: DataTypes.INTEGER,
         allowNull: false,
       },
-      userId: {
+      addedByuserId: {
         type: DataTypes.INTEGER,
         allowNull: false,
       },
