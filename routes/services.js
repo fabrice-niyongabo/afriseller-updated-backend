@@ -7,6 +7,7 @@ const {
   addService,
   deleteService,
   updateService,
+  adminGetAll,
 } = require("../controllers/services");
 const { uploadImage } = require("../controllers/upload");
 
@@ -14,6 +15,7 @@ const auth = require("../middleware/auth");
 const protectRoute = require("../middleware/protectRoutes");
 
 router.get("/", getAll);
+router.get("/all", auth, protectRoute(["admin"]), adminGetAll);
 router.get("/:id", getOne);
 router.post(
   "/",

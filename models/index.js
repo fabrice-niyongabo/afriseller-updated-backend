@@ -73,6 +73,7 @@ db.shipping_estimations = require("./shippingEstimations")(
 db.wishlist = require("./wishlist")(sequelize, DataTypes);
 db.booking = require("./booking")(sequelize, DataTypes);
 db.services = require("./services")(sequelize, DataTypes);
+db.requested_services = require("./requestedServices")(sequelize, DataTypes);
 //modles
 
 db.sequelize.sync({ force: false }).then(() => {

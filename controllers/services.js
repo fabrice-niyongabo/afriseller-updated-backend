@@ -6,6 +6,20 @@ const Services = db.services;
 
 const getAll = async (req, res) => {
   try {
+    const services = await Services.findAll({ where: { isActive: true } });
+    return res.status(200).json({
+      status: "success",
+      services,
+    });
+  } catch (err) {
+    res.status(400).send({
+      msg: err.message,
+    });
+  }
+};
+
+const adminGetAll = async (req, res) => {
+  try {
     const services = await Services.findAll({});
     return res.status(200).json({
       status: "success",
@@ -172,4 +186,5 @@ module.exports = {
   addService,
   updateService,
   deleteService,
+  adminGetAll,
 };
