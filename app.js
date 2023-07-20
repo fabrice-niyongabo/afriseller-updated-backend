@@ -74,6 +74,7 @@ const shippingEstimationsRoute = require("./routes/shippingEstimations");
 const wishlistRoute = require("./routes/wishlist");
 const bookingRoute = require("./routes/booking");
 const servicesRoute = require("./routes/services");
+const requestedServicesRoute = require("./routes/requestedServices");
 
 app.use("/api/users/", usersRoute);
 app.use("/api/agents/", agentsRoute);
@@ -106,6 +107,7 @@ app.use("/api/estimation/", shippingEstimationsRoute);
 app.use("/api/wishlist/", wishlistRoute);
 app.use("/api/booking/", bookingRoute);
 app.use("/api/services/", servicesRoute);
+app.use("/api/services/req/", requestedServicesRoute);
 
 //404 route
 app.use("*", (req, res) => {
