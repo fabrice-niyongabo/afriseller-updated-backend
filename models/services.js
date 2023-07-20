@@ -16,6 +16,15 @@ module.exports = (sequelize, DataTypes) => {
           msg: "Service name already in use!",
         },
       },
+      price: {
+        type: DataTypes.DECIMAL(10, 2),
+        defaultValue: 0.0,
+        allowNull: false,
+      },
+      currency: {
+        type: DataTypes.STRING(10),
+        allowNull: false,
+      },
       description: {
         type: DataTypes.TEXT,
         allowNull: false,

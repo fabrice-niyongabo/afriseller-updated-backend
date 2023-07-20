@@ -46,10 +46,9 @@ const addService = async (req, res) => {
     return res.status(400).send({ msg: "No file was uploaded." });
   }
   try {
-    const { name, description } = req.body;
-    const io = req.app.get("socketio");
+    const { name, description, price, currency } = req.body;
     // Validate user input
-    if (!name && !description) {
+    if (!name && !description && !price && !currency) {
       return res.status(400).send({
         status: "Error",
         msg: "Provide correct info",
@@ -57,6 +56,8 @@ const addService = async (req, res) => {
     }
     const service = await Services.create({
       name,
+      price,
+      currency,
       description,
       image: req.file.filename,
     });
@@ -74,9 +75,18 @@ const addService = async (req, res) => {
 };
 const updateService = async (req, res) => {
   try {
-    const { name, description, id, isActive } = req.body;
+    const { name, description, id, isActive, price, currency } = req.body;
     // Validate user input
-    if (!(name && description && id && isActive !== undefined)) {
+    if (
+      !(
+        name &&
+        description &&
+        id &&
+        isActive !== undefined &&
+        price &&
+        currency
+      )
+    ) {
       return res.status(400).send({
         status: "Error",
         msg: "Provide correct info",
@@ -85,12 +95,13 @@ const updateService = async (req, res) => {
     await Services.update(
       {
         name,
+        price,
+        currency,
         description,
         isActive,
       },
       { where: { id } }
     );
-
     return res.status(200).json({
       status: "success",
       msg: "Service updated!",
