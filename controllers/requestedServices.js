@@ -35,9 +35,9 @@ const getAll = async (req, res) => {
 
 const getRequestedServicesFiles = async (req, res) => {
   try {
-    const serviceId = req.params(["id"]);
+    const requestId = req.params(["id"]);
     const files = await RequestedServicesFiles.findAll({
-      where: { serviceId },
+      where: { requestId },
     });
 
     return res.status(200).json({
