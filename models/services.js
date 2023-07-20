@@ -11,6 +11,10 @@ module.exports = (sequelize, DataTypes) => {
       name: {
         type: DataTypes.STRING(100),
         allowNull: false,
+        unique: {
+          args: true,
+          msg: "Service name already in use!",
+        },
       },
       description: {
         type: DataTypes.TEXT,
@@ -20,6 +24,10 @@ module.exports = (sequelize, DataTypes) => {
         type: DataTypes.TEXT,
         allowNull: false,
         defaultValue: "",
+      },
+      isActive: {
+        type: DataTypes.BOOLEAN,
+        defaultValue: true,
       },
     },
     {
