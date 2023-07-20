@@ -69,7 +69,7 @@ module.exports = (sequelize, DataTypes) => {
       },
       verificationStatus: {
         type: DataTypes.STRING(10),
-        defaultValue: verificationStatusEnum.IN_REVIEW,
+        defaultValue: verificationStatusEnum.UNDER_REVIEW,
       },
       verificationMessage: {
         type: DataTypes.STRING,

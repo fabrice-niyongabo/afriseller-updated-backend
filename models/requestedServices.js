@@ -33,7 +33,7 @@ module.exports = (sequelize, DataTypes) => {
       },
       status: {
         type: DataTypes.STRING(20),
-        defaultValue: verificationStatusEnum.IN_REVIEW,
+        defaultValue: verificationStatusEnum.UNDER_REVIEW,
       },
     },
     {

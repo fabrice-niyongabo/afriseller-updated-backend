@@ -107,7 +107,7 @@ app.use("/api/estimation/", shippingEstimationsRoute);
 app.use("/api/wishlist/", wishlistRoute);
 app.use("/api/booking/", bookingRoute);
 app.use("/api/services/", servicesRoute);
-app.use("/api/services/req/", requestedServicesRoute);
+app.use("/api/reqservices/", requestedServicesRoute);
 
 //404 route
 app.use("*", (req, res) => {

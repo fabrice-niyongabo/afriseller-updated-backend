@@ -36,9 +36,10 @@ const agentsEarningTypesEnum = {
 };
 
 const verificationStatusEnum = {
-  IN_REVIEW: "IN REVIEW",
+  UNDER_REVIEW: "UNDER_REVIEW",
   REJECTED: "REJECTED",
   VERIFIED: "VERIFIED",
+  APPROVED: "APPROVED",
 };
 
 const eventNamesEnum = {

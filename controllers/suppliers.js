@@ -212,7 +212,7 @@ const updateDocument = async (req, res) => {
     await Suppliers.update(
       {
         idNumberDocument: req.file.filename,
-        verificationStatus: verificationStatusEnum.IN_REVIEW,
+        verificationStatus: verificationStatusEnum.UNDER_REVIEW,
       },
       {
         where: {
