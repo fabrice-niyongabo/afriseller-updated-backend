@@ -1,5 +1,3 @@
-const { Op } = require("sequelize");
-const { eventNamesEnum, handleSocketDataUpdate } = require("../helpers");
 const db = require("../models");
 
 // models
