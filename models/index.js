@@ -74,6 +74,10 @@ db.wishlist = require("./wishlist")(sequelize, DataTypes);
 db.booking = require("./booking")(sequelize, DataTypes);
 db.services = require("./services")(sequelize, DataTypes);
 db.requested_services = require("./requestedServices")(sequelize, DataTypes);
+db.requested_services_files = require("./requestedServicesFiles")(
+  sequelize,
+  DataTypes
+);
 //modles
 
 db.sequelize.sync({ force: false }).then(() => {

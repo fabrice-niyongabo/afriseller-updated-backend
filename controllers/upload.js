@@ -20,6 +20,11 @@ const uploadImage = multer({
   },
 });
 
+const uploadFile = multer({
+  storage,
+});
+
 module.exports = {
   uploadImage,
+  uploadFile,
 };
