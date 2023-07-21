@@ -89,7 +89,6 @@ const getAll = async (req, res) => {
       ...item.dataValues,
       cartItems: JSON.parse(item.dataValues.cartItems),
       deliveryAddress: JSON.parse(item.dataValues.deliveryAddress),
-      deliveryVehicle: JSON.parse(item.dataValues.deliveryVehicle),
     }));
     return res.status(200).json({
       status: "success",
@@ -110,9 +109,6 @@ const adminGetAll = async (req, res) => {
       const client = await Users.findOne({
         where: { userId: orders[i].dataValues.userId },
       });
-      const agent = await Agents.findOne({
-        where: { agentId: orders[i].dataValues.agentId },
-      });
       const rider = await Riders.findOne({
         where: { riderId: orders[i].dataValues.riderId },
       });
@@ -120,10 +116,8 @@ const adminGetAll = async (req, res) => {
         ...orders[i].dataValues,
         cartItems: JSON.parse(orders[i].dataValues.cartItems),
         deliveryAddress: JSON.parse(orders[i].dataValues.deliveryAddress),
-        deliveryVehicle: JSON.parse(orders[i].dataValues.deliveryVehicle),
         client,
         rider,
-        agent,
       });
     }
     return res.status(200).json({
@@ -159,7 +153,6 @@ const agentsGetPendingOrders = async (req, res) => {
         ...item.dataValues,
         cartItems: JSON.parse(item.cartItems),
         deliveryAddress: JSON.parse(item.deliveryAddress),
-        deliveryVehicle: JSON.parse(item.deliveryVehicle),
       }));
     }
 
@@ -192,7 +185,6 @@ const ridersGetPendingOrders = async (req, res) => {
       ...item.dataValues,
       cartItems: JSON.parse(item.cartItems),
       deliveryAddress: JSON.parse(item.deliveryAddress),
-      deliveryVehicle: JSON.parse(item.deliveryVehicle),
     }));
 
     return res.status(200).json({
@@ -223,7 +215,6 @@ const agentsGetAcceptedOrders = async (req, res) => {
       ...item.dataValues,
       cartItems: JSON.parse(item.cartItems),
       deliveryAddress: JSON.parse(item.deliveryAddress),
-      deliveryVehicle: JSON.parse(item.deliveryVehicle),
     }));
 
     return res.status(200).json({
@@ -256,7 +247,6 @@ const ridersGetWaitingOrders = async (req, res) => {
       ...item.dataValues,
       cartItems: JSON.parse(item.cartItems),
       deliveryAddress: JSON.parse(item.deliveryAddress),
-      deliveryVehicle: JSON.parse(item.deliveryVehicle),
     }));
 
     return res.status(200).json({
@@ -288,7 +278,6 @@ const ridersGetCompletedOrders = async (req, res) => {
       ...item.dataValues,
       cartItems: JSON.parse(item.cartItems),
       deliveryAddress: JSON.parse(item.deliveryAddress),
-      deliveryVehicle: JSON.parse(item.deliveryVehicle),
     }));
 
     return res.status(200).json({
@@ -321,7 +310,6 @@ const agentsGetCompletedOrders = async (req, res) => {
       ...item.dataValues,
       cartItems: JSON.parse(item.cartItems),
       deliveryAddress: JSON.parse(item.deliveryAddress),
-      deliveryVehicle: JSON.parse(item.deliveryVehicle),
     }));
 
     return res.status(200).json({
@@ -344,7 +332,6 @@ const submitOrder = async (req, res) => {
       cartItems,
       cartTotalAmount,
       distance,
-      vehicle,
       deliveryFees,
       deliveryAddress,
       paymentMethod,
@@ -361,7 +348,6 @@ const submitOrder = async (req, res) => {
         cartItems &&
         cartTotalAmount &&
         distance &&
-        vehicle &&
         deliveryFees &&
         deliveryAddress &&
         paymentMethod &&
@@ -412,7 +398,6 @@ const submitOrder = async (req, res) => {
           paymentMethod,
           paymentPhoneNumber,
           deliveryAddress: deliveryAddress,
-          deliveryVehicle: vehicle,
           deliveryFees: deliveryFees,
           transactionId,
           deliveryCode: req.user.userId + getRandomNumber(),
@@ -449,7 +434,6 @@ const submitOrder = async (req, res) => {
             deliveryCode: req.user.userId + getRandomNumber(),
             paymentPhoneNumber,
             deliveryAddress: deliveryAddress,
-            deliveryVehicle: vehicle,
             deliveryFees: deliveryFees,
             paymentStatus: "SUCCESS",
           });
@@ -490,7 +474,6 @@ const submitOrder = async (req, res) => {
           //   paymentMethod,
           //   paymentPhoneNumber,
           //   deliveryAddress: deliveryAddress,
-          //   deliveryVehicle: vehicle,
           //   deliveryFees: deliveryFees,
           //   deliveryCode: 0,
           //   paymentStatus: "FAILED",
