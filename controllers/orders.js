@@ -12,7 +12,6 @@ const {
   transactionTypeEnum,
   saveAdminNotification,
 } = require("../helpers");
-const packagingFees = require("../models/packagingFees");
 
 // models
 const Orders = db.orders;

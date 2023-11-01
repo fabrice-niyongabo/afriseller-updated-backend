@@ -44,27 +44,14 @@ app.get("/", (req, res) => {
 });
 
 const usersRoute = require("./routes/users");
-const marketsRoute = require("./routes/markets");
 const shopCategoriesRoute = require("./routes/shopCategories");
 const productCategoriesRoute = require("./routes/productCategories");
 const productSubCategoriesRoute = require("./routes/productSubCategories");
 const productsRoute = require("./routes/products");
-const feesRoute = require("./routes/deliveryFees");
 const ordersRoute = require("./routes/orders");
-const walletRoute = require("./routes/wallet");
-const dishesRoute = require("./routes/dishes");
-const agentsRoute = require("./routes/agents");
-const messagesRoute = require("./routes/messages");
-const agentsWalletRoute = require("./routes/agentsWallet");
-const agentsFeesRoute = require("./routes/agentsFees");
 const notificationsRoute = require("./routes/notifications");
-const ridersRoute = require("./routes/riders");
-const ridersWalletRoute = require("./routes/ridersWallet");
 const transactionsRoute = require("./routes/transactions");
 const bannersRoute = require("./routes/banners");
-const appTokensRoute = require("./routes/appTokens");
-const systemFeesRoute = require("./routes/systemFees");
-const packagingFeesRoute = require("./routes/packagingFees");
 const suppliersRoute = require("./routes/suppliers");
 
 const shopsRoute = require("./routes/shops");
@@ -77,9 +64,6 @@ const servicesRoute = require("./routes/services");
 const requestedServicesRoute = require("./routes/requestedServices");
 
 app.use("/api/users/", usersRoute);
-app.use("/api/agents/", agentsRoute);
-app.use("/api/agents/fees/", agentsFeesRoute);
-app.use("/api/markets/", marketsRoute);
 app.use("/api/shopcategories/", shopCategoriesRoute);
 app.use("/api/productcategories/", productCategoriesRoute);
 app.use("/api/productsubcategories/", productSubCategoriesRoute);
@@ -87,20 +71,10 @@ app.use("/api/shops/", shopsRoute);
 app.use("/api/productimages/", productImagesRoute);
 
 app.use("/api/products/", productsRoute);
-app.use("/api/fees/", feesRoute);
 app.use("/api/orders/", ordersRoute);
-app.use("/api/wallet/", walletRoute);
-app.use("/api/dishes/", dishesRoute);
-app.use("/api/messages/", messagesRoute);
-app.use("/api/agentswallet/", agentsWalletRoute);
 app.use("/api/notifications/", notificationsRoute);
-app.use("/api/riders/", ridersRoute);
-app.use("/api/riderswallet/", ridersWalletRoute);
 app.use("/api/transactions/", transactionsRoute);
 app.use("/api/banners/", bannersRoute);
-app.use("/api/apptokens/", appTokensRoute);
-app.use("/api/systemfees/", systemFeesRoute);
-app.use("/api/packagingfees/", packagingFeesRoute);
 app.use("/api/suppliers/", suppliersRoute);
 app.use("/api/countries/", countriesRoute);
 app.use("/api/estimation/", shippingEstimationsRoute);

@@ -26,7 +26,6 @@ db.sequelize = sequelize;
 
 //modles
 db.users = require("./usersModel")(sequelize, DataTypes);
-db.markets = require("./marketsModel")(sequelize, DataTypes);
 db.shop_categories = require("./shopCategories")(sequelize, DataTypes);
 db.product_sub_categories = require("./productSubCategories")(
   sequelize,
@@ -38,32 +37,10 @@ db.products = require("./productsModel")(sequelize, DataTypes);
 db.product_prices = require("./productPricesModel")(sequelize, DataTypes);
 db.product_images = require("./productImages")(sequelize, DataTypes);
 
-db.delivery_fees = require("./deliveryFeesModel")(sequelize, DataTypes);
 db.orders = require("./ordersModel")(sequelize, DataTypes);
-db.wallet = require("./walletModel")(sequelize, DataTypes);
-db.dishes = require("./dishes")(sequelize, DataTypes);
-db.dish_products = require("./dishProducts")(sequelize, DataTypes);
-db.agents = require("./agents")(sequelize, DataTypes);
-db.agents_market_subscriptions = require("./agentsMarketSubscriptions")(
-  sequelize,
-  DataTypes
-);
-db.suppliers_payment_details = require("./suppliersPaymentDetails")(
-  sequelize,
-  DataTypes
-);
-
-db.messages = require("./messages")(sequelize, DataTypes);
-db.agents_wallet = require("./agentsWallet")(sequelize, DataTypes);
-db.agents_fees = require("./agentsFees")(sequelize, DataTypes);
 db.notifications = require("./nofications")(sequelize, DataTypes);
-db.riders = require("./riders")(sequelize, DataTypes);
-db.riders_wallet = require("./ridersWallet")(sequelize, DataTypes);
 db.transactions = require("./transactions")(sequelize, DataTypes);
 db.banners = require("./banners")(sequelize, DataTypes);
-db.app_tokens = require("./appTokens")(sequelize, DataTypes);
-db.system_fees = require("./systemFees")(sequelize, DataTypes);
-db.packaging_fees = require("./packagingFees")(sequelize, DataTypes);
 db.suppliers = require("./suppliers")(sequelize, DataTypes);
 db.countries = require("./countries")(sequelize, DataTypes);
 db.shipping_estimations = require("./shippingEstimations")(
