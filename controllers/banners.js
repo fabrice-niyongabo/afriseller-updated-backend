@@ -8,7 +8,8 @@ const Banners = db.banners;
 
 const getAll = async (req, res) => {
   try {
-    const banners = await Banners.findAll({ where: { isActive: true } });
+    // const banners = await Banners.findAll({ where: { isActive: true } });
+    const banners = await Banners.findAll({});
     return res.status(200).json({
       banners,
     });
@@ -27,26 +28,13 @@ const addBanner = async (req, res) => {
     return res.status(400).send({ msg: "No file was uploaded." });
   }
   try {
-    const io = req.app.get("socketio");
-    const { urlOrComponentValue, hasUrl, hasScreenComponent } = req.body;
+    const { url } = req.body;
 
-    // Validate user input
-    if (hasUrl === undefined || hasScreenComponent === undefined) {
-      return res.status(400).send({
-        status: "Error",
-        msg: "Provide correct info",
-      });
-    }
     const banner = await Banners.create({
-      hasUrl,
-      hasScreenComponent,
-      urlOrComponentValue: urlOrComponentValue ? urlOrComponentValue : "",
+      url: url ? url : "",
       image: req.file.filename,
     });
-    io.emit(eventNamesEnum.CyizereEventNames, {
-      type: eventNamesEnum.ADD_BANNERS,
-      data: banner.dataValues,
-    });
+
     return res.status(201).json({
       status: "success",
       msg: "Banner added successfull!",
@@ -61,17 +49,9 @@ const addBanner = async (req, res) => {
 
 const updateBanner = async (req, res) => {
   try {
-    const io = req.app.get("socketio");
-    const { urlOrComponentValue, hasUrl, hasScreenComponent, isActive, id } =
-      req.body;
+    const { url, id } = req.body;
     // Validate user input
-    if (
-      hasUrl === undefined ||
-      hasScreenComponent === undefined ||
-      urlOrComponentValue === undefined ||
-      isActive === undefined ||
-      id === undefined
-    ) {
+    if (id === undefined) {
       return res.status(400).send({
         status: "Error",
         msg: "Provide correct info",
@@ -79,19 +59,9 @@ const updateBanner = async (req, res) => {
     }
     const banner = await Banners.update(
       {
-        urlOrComponentValue,
-        hasUrl,
-        hasScreenComponent,
-        isActive,
+        url,
       },
       { where: { id } }
-    );
-    await handleSocketDataUpdate(
-      { where: { id } },
-      Banners,
-      io,
-      eventNamesEnum.CyizereEventNames,
-      eventNamesEnum.UPDATE_BANNERS
     );
     return res.status(200).json({
       status: "success",
@@ -107,7 +77,6 @@ const updateBanner = async (req, res) => {
 
 const deleteBanner = async (req, res) => {
   try {
-    const io = req.app.get("socketio");
     const id = req.params["id"];
     // Validate user input
     if (!id) {
@@ -117,10 +86,7 @@ const deleteBanner = async (req, res) => {
       });
     }
     const banner = await Banners.destroy({ where: { id }, force: true });
-    io.emit(eventNamesEnum.CyizereEventNames, {
-      type: eventNamesEnum.DELETE_BANNERS,
-      data: { id },
-    });
+
     return res.status(200).json({
       status: "success",
       msg: "Banner deleted successfull!",

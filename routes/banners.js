@@ -12,7 +12,6 @@ const auth = require("../middleware/auth");
 const protectRoute = require("../middleware/protectRoutes");
 
 router.get("/", getAll);
-router.get("/:mId", getAll);
 router.post(
   "/",
   auth,
