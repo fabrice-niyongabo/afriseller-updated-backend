@@ -21,6 +21,7 @@ const login = async (req, res) => {
     const user = await Users.findOne({
       where: {
         [Op.or]: [{ email: emailOrPhone }, { phone: emailOrPhone }],
+        isDeleted: false,
       },
     });
     if (user && (await bcrypt.compare(password, user.password))) {
@@ -291,4 +292,5 @@ module.exports = {
   updatePwd,
   adminGetAll,
   updateUserStatus,
+  deleteAccount,
 };
