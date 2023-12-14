@@ -9,6 +9,7 @@ const {
   updateImage,
   adminGetAll,
   updateUserStatus,
+  deleteAccount,
 } = require("../controllers/users");
 
 const auth = require("../middleware/auth");
@@ -16,6 +17,7 @@ const protectRoute = require("../middleware/protectRoutes");
 
 router.post("/login", login);
 router.post("/register", register);
+router.post("/delete", auth, protectRoute(["client", "seller"]), deleteAccount);
 router.get("/", auth, protectRoute(["admin"]), adminGetAll);
 router.put("/", auth, protectRoute(["admin"]), updateUserStatus);
 router.put(
