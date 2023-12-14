@@ -1,1 +1,1 @@
-# ntuma-app-backend
+# afriseller-backend
