@@ -48,6 +48,13 @@ module.exports = (sequelize, DataTypes) => {
         type: DataTypes.BOOLEAN,
         defaultValue: true,
       },
+      isDeleted: {
+        type: DataTypes.BOOLEAN,
+        defaultValue: true,
+      },
+      deletionFeedback: {
+        type: DataTypes.TEXT,
+      },
     },
     {
       timestamps: true,

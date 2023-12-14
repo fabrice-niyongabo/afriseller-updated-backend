@@ -247,6 +247,42 @@ const updateImage = async (req, res) => {
   }
 };
 
+const deleteAccount = async (req, res) => {
+  try {
+    const { feedback, email } = req.body;
+
+    if (!feedback || !email) {
+      return res.status(400).send({
+        msg: "Invalid request",
+      });
+    }
+
+    //get the user
+    const user = await Users.findOne({ email, userId: req.user.userId });
+    if (!user) {
+      return res.status(404).send({
+        msg: "User can not be found.",
+      });
+    }
+
+    await Users.update(
+      {
+        isDeleted: true,
+        deletionFeedback: feedback,
+      },
+      { where: { userId: req.user.userId } }
+    );
+    return res.status(200).json({
+      status: "success",
+      msg: "Your account has been deleted successfull",
+    });
+  } catch (err) {
+    return res.status(400).send({
+      msg: err.message,
+    });
+  }
+};
+
 module.exports = {
   login,
   register,
