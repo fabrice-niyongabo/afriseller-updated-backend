@@ -1,6 +1,6 @@
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
-const { Op } = require("sequelize");
+const { Op, where } = require("sequelize");
 const db = require("../models");
 
 // models
@@ -252,14 +252,16 @@ const deleteAccount = async (req, res) => {
   try {
     const { feedback, email } = req.body;
 
-    if (!feedback || !email) {
+    if (!(feedback && email)) {
       return res.status(400).send({
         msg: "Invalid request",
       });
     }
 
     //get the user
-    const user = await Users.findOne({ email, userId: req.user.userId });
+    const user = await Users.findOne({
+      where: { email, userId: req.user.userId },
+    });
     if (!user) {
       return res.status(404).send({
         msg: "User can not be found.",
